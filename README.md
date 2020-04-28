@@ -1,1 +1,1 @@
-The project by file sharing by Lunar and Veseha.
+Project for fast file sharing from Veseha and smth-0 (Lunar)
