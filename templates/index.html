@@ -2,4 +2,16 @@
 
 {% block content %}
 <a>Hello</a>
+{% if current_user.is_authenticated %}
+    {% if current_user.type_user == "admin" %}
+        <a>Admin</a>
+    {% else %}
+        <a>User</a>
+    {% endif %}
+{% else %}
+<p>
+    <a class="btn btn-primary" href="/register">Зарегистрироваться</a>
+    <a class="btn btn-success" href="/login">Войти</a>
+</p>
+{% endif %}
 {% endblock %}

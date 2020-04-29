@@ -104,6 +104,7 @@ def reqister():
 def index():
     # session = db_session.create_session()
     if current_user.is_authenticated:
+        print(str(current_user.name))
         None
     else:
         None
