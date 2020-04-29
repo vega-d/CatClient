@@ -75,7 +75,7 @@ def reqister():
     return render_template('register.html', title='Register', form=form)
 
 
-# @app.route("/cookie_test")
+# @app.route("/cookie_test"
 # def cookie_test():
 #     visits_count = int(request.cookies.get("visits_count", 0))
 #     if visits_count:
