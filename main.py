@@ -6,14 +6,14 @@ from wtforms.validators import DataRequired
 from wtforms.fields.html5 import EmailField
 from data import db_session
 from data.users import User
-from data.classes import LoginForm
+from data.classes import LoginForm, RegisterForm
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 import datetime
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
-db_session.global_init("db/blogs.sqlite")
+db_session.global_init("db/catclient.sqlite")
 app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(days=365)
 
 login_manager = LoginManager()
@@ -42,10 +42,8 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         session = db_session.create_session()
-        user = session.query(User).filter(User.name == form.login.data).first()
-        print(user.name, form.password.data)
+        user = session.query(User).filter(User.name == form.name.data).first()
         if user and user.check_password(form.password.data):
-            print('here')
             login_user(user, remember=form.remember_me.data)
             return redirect("/")
         return render_template('login.html',
@@ -54,29 +52,52 @@ def login():
     return render_template('login.html', title='Login', form=form)
 
 
-@app.route("/cookie_test")
-def cookie_test():
-    visits_count = int(request.cookies.get("visits_count", 0))
-    if visits_count:
-        res = make_response(f"Вы пришли на эту страницу {visits_count + 1} раз")
-        res.set_cookie("visits_count", str(visits_count + 1),
-                       max_age=20)
-    else:
-        res = make_response(
-            "Вы пришли на эту страницу в первый раз за последние 2 года")
-        res.set_cookie("visits_count", '1',
-                       max_age=20)
-    return res
+@app.route('/register', methods=['GET', 'POST'])
+def reqister():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        if form.password.data != form.password_again.data:
+            return render_template('register.html', title='Register',
+                                   form=form,
+                                   message="Password mismatch")
+        session = db_session.create_session()
+        if session.query(User).filter(User.name == form.name.data).first():
+            return render_template('register.html', title='Register',
+                                   form=form,
+                                   message="This user already exists.")
+        user = User(
+            name=form.name.data
+        )
+        user.set_password(form.password.data)
+        session.add(user)
+        session.commit()
+        return redirect('/login')
+    return render_template('register.html', title='Register', form=form)
 
 
-@app.route('/session_test/')
-def session_test():
-    if 'visits_count' in session:
-        session['visits_count'] = session.get('visits_count') + 1
-    else:
-        session['visits_count'] = 1
-    return make_response(f'kolvo {session["visits_count"]}')
-    # дальше - код для вывода страницы
+# @app.route("/cookie_test")
+# def cookie_test():
+#     visits_count = int(request.cookies.get("visits_count", 0))
+#     if visits_count:
+#         res = make_response(f"Вы пришли на эту страницу {visits_count + 1} раз")
+#         res.set_cookie("visits_count", str(visits_count + 1),
+#                        max_age=20)
+#     else:
+#         res = make_response(
+#             "Вы пришли на эту страницу в первый раз за последние 2 года")
+#         res.set_cookie("visits_count", '1',
+#                        max_age=20)
+#     return res
+#
+#
+# @app.route('/session_test/')
+# def session_test():
+#     if 'visits_count' in session:
+#         session['visits_count'] = session.get('visits_count') + 1
+#     else:
+#         session['visits_count'] = 1
+#     return make_response(f'kolvo {session["visits_count"]}')
+#     # дальше - код для вывода страницы
 
 
 @app.route("/")

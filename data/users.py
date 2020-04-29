@@ -24,5 +24,6 @@ class User(SqlAlchemyBase, UserMixin):
     created_date = sqlalchemy.Column(sqlalchemy.DateTime,
                                      default=datetime.datetime.now)
     dirs = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    type_user = sqlalchemy.Column(sqlalchemy.String, nullable=False, default='user')
 
 

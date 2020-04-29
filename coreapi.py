@@ -23,6 +23,7 @@ def quick_share(app, path, address=None):
             try:
                 return send_from_directory(*splitted_path)
             except Exception as e:
+                print(e)
                 return render_template('error.html', stack=e)
     except Exception as e:
         raise ValueError
