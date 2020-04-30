@@ -7,7 +7,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 import global_var as gv
 import service_func as sf
 from data import db_session
-from data.classes import LoginForm, RegisterForm
+from data.classes import LoginForm, RegisterForm, AddDirsForm
 from data.users import User
 
 app = Flask(__name__)
@@ -20,13 +20,47 @@ login_manager.init_app(app)
 
 
 def main():
-    app.run(port=8080, host='0.0.0.0')
+    app.run(port=8080, host='0.0.0.0'
+            )
 
+
+# ----------------------------- service url ------------------------------
 
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static', 'img'), 'favicon.ico',
                                mimetype='image/vnd.microsoft.icon')
+
+
+# ------------------------------ admin url ------------------------------
+
+
+@app.route('/add_dirs', methods=['GET', 'POST'])
+def add_dirs():
+    form = AddDirsForm()
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        user = session.query(User).filter(User.name == form.name.data).first()
+        if user:
+            if not sf.checking_dir_when_adding(form.dir.data):
+                return render_template('add_dirs.html',
+                                       message="Название путя не корректно", title='Add Folder',
+                                       form=form)
+            if sf.does_this_directory_already_exist(form.name.data, form.dir.data):
+                return render_template('add_dirs.html',
+                                       message="Данная папка уже есть в доступе у пользователя", title='Add Folder',
+                                       form=form)
+            all_user_dirs = sf.available_user_addresses(form.name.data)
+            all_user_dirs.append(form.dir.data)
+            user.dirs = ','.join(all_user_dirs)
+            session.commit()
+            return redirect("/")
+        return render_template('add_dirs.html',
+                               message="Пользователя не существует", title='Add Folder',
+                               form=form)
+    return render_template('add_dirs.html', title='Add Folder', form=form)
+
+# ------------------------------ login url ------------------------------
 
 
 @login_manager.user_loader
@@ -84,10 +118,16 @@ def reqister():
     return render_template('register.html', title='Register', form=form)
 
 
+# ------------------------------ error url ------------------------------
+
+
 @app.route('/no_access/')
 @app.route('/no_access/<reason>')
 def no_access(reason="None specified"):
     return render_template('no_access.html', reason=reason)
+
+
+# ------------------------------ main url ------------------------------
 
 
 @app.route("/")

@@ -32,9 +32,15 @@
         </h4>
         {% if current_user.is_authenticated %}
             <p>
-                <a class="btn btn-primary"> {{ current_user.name }} </a>
-                <a class="btn btn-warning" href="/logout"> Выйти </a>
-                <a class="btn btn-primary" href="/register">Зарегистрировать Пользователя</a>
+                {% if current_user.type_user == "admin" %}
+                    <a class="btn btn-outline-primary" href="/register">Зарегистрировать Пользователя</a>
+                    <a class="btn btn-outline-success" href="/add_dirs">Добавить папку</a>
+                {% endif %}
+                <a class="btn btn-outline-primary"> {{ current_user.name }} </a>
+                <a class="btn btn-outline-warning" href="/logout"> Выйти </a>
+
+
+
             </p>
 
         {% else %}

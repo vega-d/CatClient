@@ -16,3 +16,9 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     password_again = PasswordField('Repeat password', validators=[DataRequired()])
     submit = SubmitField('To register')
+
+
+class AddDirsForm(FlaskForm):
+    name = StringField('User name', validators=[DataRequired()])
+    dir = StringField('Full folder name', validators=[DataRequired()])
+    submit = SubmitField('Give access')
