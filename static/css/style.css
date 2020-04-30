@@ -17,3 +17,15 @@ body, body.bg-gray {
     background-size: auto !important;
     background-position: left top !important;
 }
+
+div.horizontalgap {
+  float: left;
+  overflow: hidden;
+  height: 1px;
+  width: 0px;
+}
+
+img {
+    max-width: 90%;
+    max-height: 90%;
+}

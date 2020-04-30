@@ -20,7 +20,7 @@ login_manager.init_app(app)
 
 
 def main():
-    app.run(port=8080, host='127.0.0.1')
+    app.run(port=8080, host='0.0.0.0')
 
 
 @app.route('/favicon.ico')
@@ -92,7 +92,7 @@ def no_access(reason="None specified"):
 
 @app.route("/")
 def index():
-    args = {'quick_src': sf.quick_image()}
+    args = {'quick_src': sf.quick_image(), 'ip': sf.getIP()}
 
     return render_template("index.html", **args)
 

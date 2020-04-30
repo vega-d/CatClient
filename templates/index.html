@@ -11,6 +11,22 @@
 {% else %}
 {% endif %}
 
-<p><img src="{{ quick_src }}" alt="oops, no quick share uploaded"/></p>
+<p>
+    <a>
+        <div class="img">
+            <img src="{{ quick_src }}" alt="oops, no quick share uploaded"/>
+        </div>
+    </a>
+    <a>
+        <div>
+            <svg height="60" width="200">
+              <text x="0" y="15" fill="#FFFFFF">
+                  address:
+                  <font size="50">{{ ip }}</font>
+              </text>
+            </svg>
+        </div>
+    </a>
+</p>
 
 {% endblock %}
