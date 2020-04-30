@@ -9,6 +9,8 @@
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
           crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='css/style.css') }} />
+    <link rel="shortcut icon" type="image/png" href="/favicon.ico"/>
+
     <title>{{title}}</title>
 </head>
 <body style=" background-color: #202020 !important;
@@ -25,18 +27,18 @@
 <header>
     <nav class="navbar navbar-dark bg-dark">
         <h4 class="navbar-brand" href="#">
-            <img src="/static/img/logo.png" width="40" height="40" class="d-inline-block align-top" alt="">
-            CatClient
+            <img src="/static/img/icon.png" width="40" height="40" class="d-inline-block align-top" alt="">
+            <a href="/" title="Go to the main page" style="color: #FFFFFF">CatClient</a>
         </h4>
         {% if current_user.is_authenticated %}
             <p>
                 <a class="btn btn-primary"> {{ current_user.name }} </a>
                 <a class="btn btn-warning" href="/logout"> Выйти </a>
+                <a class="btn btn-primary" href="/register">Зарегистрировать Пользователя</a>
             </p>
 
         {% else %}
             <p>
-                <a class="btn btn-primary" href="/register">Зарегистрироваться</a>
                 <a class="btn btn-success" href="/login">Войти</a>
             </p>
         {% endif %}

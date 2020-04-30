@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>oops</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block content %}
 <h1>oops, sorry, something went wrong.</h1>
 <h3>please contact administration.</h3>
-error stack:
-{stack}
-</body>
-</html>
+<h4>error stack:</h4>
+{{ stack }}
+{% endblock %}

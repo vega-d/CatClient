@@ -1,15 +1,14 @@
-from flask import Flask, render_template, redirect, request, make_response, session, abort
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField,  BooleanField, SubmitField, TextAreaField,\
-    SubmitField, ValidationError, TextField
-from wtforms.validators import DataRequired
-from wtforms.fields.html5 import EmailField
-from data import db_session
-from data.users import User
-from data.classes import LoginForm, RegisterForm
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 import datetime
+import os
 
+from flask import Flask, render_template, redirect, send_from_directory
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+
+import global_var as gv
+import service_func as sf
+from data import db_session
+from data.classes import LoginForm, RegisterForm
+from data.users import User
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -22,6 +21,12 @@ login_manager.init_app(app)
 
 def main():
     app.run(port=8080, host='127.0.0.1')
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static', 'img'), 'favicon.ico',
+                               mimetype='image/vnd.microsoft.icon')
 
 
 @login_manager.user_loader
@@ -55,6 +60,8 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def reqister():
     form = RegisterForm()
+    if not current_user.is_authenticated:
+        return redirect('no_access/only registered users can create accounts')
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Register',
@@ -65,6 +72,8 @@ def reqister():
             return render_template('register.html', title='Register',
                                    form=form,
                                    message="This user already exists.")
+        if not current_user.is_authenticated:
+            return redirect('no_access/only registered users can create accounts')
         user = User(
             name=form.name.data
         )
@@ -75,40 +84,17 @@ def reqister():
     return render_template('register.html', title='Register', form=form)
 
 
-# @app.route("/cookie_test"
-# def cookie_test():
-#     visits_count = int(request.cookies.get("visits_count", 0))
-#     if visits_count:
-#         res = make_response(f"Вы пришли на эту страницу {visits_count + 1} раз")
-#         res.set_cookie("visits_count", str(visits_count + 1),
-#                        max_age=20)
-#     else:
-#         res = make_response(
-#             "Вы пришли на эту страницу в первый раз за последние 2 года")
-#         res.set_cookie("visits_count", '1',
-#                        max_age=20)
-#     return res
-#
-#
-# @app.route('/session_test/')
-# def session_test():
-#     if 'visits_count' in session:
-#         session['visits_count'] = session.get('visits_count') + 1
-#     else:
-#         session['visits_count'] = 1
-#     return make_response(f'kolvo {session["visits_count"]}')
-#     # дальше - код для вывода страницы
+@app.route('/no_access/')
+@app.route('/no_access/<reason>')
+def no_access(reason="None specified"):
+    return render_template('no_access.html', reason=reason)
 
 
 @app.route("/")
 def index():
-    # session = db_session.create_session()
-    if current_user.is_authenticated:
-        print(str(current_user.name))
-        None
-    else:
-        None
-    return render_template("index.html")
+    args = {'quick_src': sf.quick_image()}
+
+    return render_template("index.html", **args)
 
 
 if __name__ == '__main__':
