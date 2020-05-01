@@ -1,33 +1,55 @@
 {% extends "base.html" %}
 
 {% block content %}
-<a>Hello</a>
+<a> </a>
 {% if current_user.is_authenticated %}
     {% if current_user.type_user == "admin" %}
-        <a>Admin</a>
+        <a> </a>
     {% else %}
-        <a>User</a>
+        <a> </a>
     {% endif %}
 {% else %}
 {% endif %}
-    
-<p>
-    <a>
-        <div class="img">
-            <img src="{{ quick_src }}" alt="oops, no quick share uploaded"/>
+
+<div class="container" style="margin-top: 15px">
+  <div class="row">
+
+      <div class="col-sm">
+        <a>
+            <div class="img">
+                <img src="{{ quick_src }}"  class="rounded" alt="oops, no quick share uploaded" height="200"/>
+            </div>
+        </a>
+      </div>
+
+    <div class="col-sm">
+        <div class="text-right">
+            <img src="static/img/qr.png" class="rounded" alt="..." width="200" height="200">
+                <figcaption> QR код для перехода на сайт</figcaption>
+                <figcaption>
+                    <footer class="blockquote-footer">
+                        Адрес: {{ ip }}
+                    </footer>
+                </figcaption>
         </div>
-    </a>
-    <a>
-        <div>
-            <svg height="60" width="200">
-              <text x="120" y="40" fill="#FFFFFF">
-                  address:
-              </text>
-            </svg>
-            <font size="50" horiz-adv-x="2">{{ ip }}    </font>
-            <img src="static/img/qr.png"/>
-        </div>
-    </a>
-</p>
+    </div>
+
+  </div>
+</div>
+
+
+<!--<p>-->
+<!--    <a>-->
+<!--        <div>-->
+<!--            <svg height="60" width="200">-->
+<!--              <text x="120" y="40" fill="#FFFFFF">-->
+<!--                  address:-->
+<!--              </text>-->
+<!--            </svg>-->
+<!--            <font size="50" horiz-adv-x="2">{{ ip }}    </font>-->
+
+<!--        </div>-->
+<!--    </a>-->
+<!--</p>-->
 
 {% endblock %}

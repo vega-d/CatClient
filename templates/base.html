@@ -26,10 +26,12 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 <header>
     <nav class="navbar navbar-dark bg-dark">
-        <h4 class="navbar-brand" href="#">
-            <img src="/static/img/icon.png" width="40" height="40" class="d-inline-block align-top" alt="">
-            <a href="/" title="Go to the main page" style="color: #FFFFFF">CatClient</a>
-        </h4>
+
+        <a class="navbar-brand" href="/">
+            <img src="/static/img/icon.png" width="36" height="36" class="d-inline-block align-top" alt="">
+            CatClient
+
+        </a>
         {% if current_user.is_authenticated %}
             <p>
                 <div class="dropdown">
