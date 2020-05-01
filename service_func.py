@@ -91,7 +91,7 @@ def does_this_directory_already_exist(user_name, address_dir):
 
 def checking_dir_when_adding(address_dir):
     '''
-    Stupidly checks if the full address
+    Stupidly checks if the full address (on Windows)
     © Veseha
     '''
     if address_dir[1] == ':' and address_dir[0] == address_dir[0].upper() and address_dir[2] == '\\':
