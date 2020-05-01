@@ -66,7 +66,7 @@ def add_dirs():
     return render_template('add_dirs.html', title='Add Folder', form=form)
 
 
-# ------------------------------ login url ------------------------------
+# ------------------------------ login url -------------------------------
 
 
 @login_manager.user_loader
