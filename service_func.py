@@ -2,7 +2,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import global_var as gv
 
 
-
 def generate_password(password):
     hashed_password = generate_password_hash(password)
     return hashed_password
@@ -38,7 +37,7 @@ def getIP():
             return '0.0.0.0'
 
     elif platform == "darwin":
-        debugOutput(r"""you're running MacOS, i'm not gonna support this shit.""")   # sorry
+        debugOutput(r"""you're running MacOS, i'm not gonna support that shit.""")  # sorry
 
 
 def available_user_addresses(user_name, address_dir=''):
@@ -48,7 +47,6 @@ def available_user_addresses(user_name, address_dir=''):
     if address_dir:
         '''
         It displays that the user has access to the folder (parameters are taken from the db)
-        © Veseha
         '''
         session = db_session.create_session()
         user = session.query(User).filter(User.name == user_name).first()
@@ -61,7 +59,6 @@ def available_user_addresses(user_name, address_dir=''):
     else:
         '''
         Displays the entire list of dir that the user has access to
-         © Veseha
         '''
         session = db_session.create_session()
         user = session.query(User).filter(User.name == user_name).first()
@@ -72,10 +69,9 @@ def available_user_addresses(user_name, address_dir=''):
 
 
 def does_this_directory_already_exist(user_name, address_dir):
-    '''
+    """
         Does this directory already exist? (Yes, it is the same as the previous function)
-        © Veseha
-    '''
+    """
     from data import db_session
     from data.users import User
 
@@ -90,10 +86,22 @@ def does_this_directory_already_exist(user_name, address_dir):
 
 
 def checking_dir_when_adding(address_dir):
-    '''
-    Stupidly checks if the full address (on Windows)
-    © Veseha
-    '''
-    if address_dir[1] == ':' and address_dir[0] == address_dir[0].upper() and address_dir[2] == '\\':
-        return True
+    """
+    Stupidly checks if the full address
+    """
+    from sys import platform
+    if platform in ("linux", "linux2"):
+        return address_dir.count('/')
+    elif platform == "win32":
+        address_dir = address_dir.replace('/', '\\')
+        return address_dir[1] == ':' and address_dir[0] == address_dir[0].upper() and address_dir[2] == '\\'
+    elif platform == "darwin":
+        debugOutput(r"""you're running MacOS, i'm not gonna support that shit.""")  # sorry
     return False
+
+
+def generateQR():
+    import qrcode
+
+    img = qrcode.make('http://' + getIP() + ':' + str(gv.port))
+    img.save("static/img/qr.png")

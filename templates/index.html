@@ -10,7 +10,7 @@
     {% endif %}
 {% else %}
 {% endif %}
-
+    
 <p>
     <a>
         <div class="img">
@@ -20,11 +20,12 @@
     <a>
         <div>
             <svg height="60" width="200">
-              <text x="0" y="15" fill="#FFFFFF">
+              <text x="120" y="40" fill="#FFFFFF">
                   address:
-                  <font size="50">{{ ip }}</font>
               </text>
             </svg>
+            <font size="50" horiz-adv-x="2">{{ ip }}    </font>
+            <img src="static/img/qr.png"/>
         </div>
     </a>
 </p>

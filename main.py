@@ -17,10 +17,13 @@ app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(days=365)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+sf.generateQR()
 
 
 def main():
-    app.run(port=8080, host='0.0.0.0'
+    app.run(
+            port=gv.port,
+            host=gv.host
             )
 
 
@@ -59,6 +62,7 @@ def add_dirs():
                                message="Пользователя не существует", title='Add Folder',
                                form=form)
     return render_template('add_dirs.html', title='Add Folder', form=form)
+
 
 # ------------------------------ login url ------------------------------
 
