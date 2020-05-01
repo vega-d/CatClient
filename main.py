@@ -40,6 +40,8 @@ def favicon():
 
 @app.route('/add_dirs', methods=['GET', 'POST'])
 def add_dirs():
+    if not current_user.is_authenticated or current_user.name != 'admin':
+        return redirect('no_access/only admin account can give permissions')
     form = AddDirsForm()
     if form.validate_on_submit():
         session = db_session.create_session()
@@ -98,7 +100,7 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def reqister():
     form = RegisterForm()
-    if not current_user.is_authenticated:
+    if not current_user.is_authenticated or current_user.name != 'admin':
         return redirect('no_access/only registered users can create accounts')
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
