@@ -122,7 +122,7 @@ def generate_dir(path):
         list_dir = os.listdir(path)
     except PermissionError as e:
         return [('/q/' + convert_path(os.path.split(path)[0]),
-                 'sorry, you have no permissions. click here to go back')]
+                 'Sorry, you have no permissions. Click here to go back')]
     ret = []
 
     split_path = os.path.split(path)
