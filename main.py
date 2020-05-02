@@ -143,23 +143,26 @@ def no_access(reason="None specified"):
 @app.route('/q/<src>')
 def quick(src=None):
     print(src)
-    if src:
-        src = src.replace(gv.url_path_separation, '/')
+    if src:  # если у нас надо получить какой-то конкретный файл или папку
+
+        src = src.replace(gv.url_path_separation, '/')  # конвертируем C:;;dir;;dir2 в нормальный формат с /
         src_split = os.path.split(src)
+        # отделяем путь от конечный пункта, то есть имя папки или файла который надо открыть
 
         if current_user.is_authenticated:
-            print('trying to access path', [src], [src_split])
-            if src_split[-1] and os.path.isfile(src):
+
+            if src_split[-1] and os.path.isfile(src):  # если мы открываем файл дать его в чистом виде
                 return send_from_directory(*src_split)
-            else:
+            else:  # если зашло сюда значит мы открываем папку
                 args = {
-                    'path': src,
-                    'list': sf.generate_dir(src)
+                    'path': src,  # путь папки
+                    'list': sf.generate_dir(src)  # ее содержимое в виде листа из кортежей.
+                    # пример кортежа ('/q/C:;;Users;;', 'Users')
                 }
-                return render_template('folder.html', **args)
-        else:
+                return render_template('folder.html', **args)  # рендерим папку
+        else:  # если нету входа в аккаунт но мы лезем в файлы то выбрасываем на no_access
             return redirect('/no_access/only users with certain access can reach this file')
-    else:
+    else:  # если просто /q без аргумента
         return send_from_directory(*os.path.split(sf.quick_share()))
 
 
