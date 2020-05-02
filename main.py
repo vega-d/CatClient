@@ -18,6 +18,7 @@ app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(days=365)
 login_manager = LoginManager()
 login_manager.init_app(app)
 sf.generateQR()
+ip = sf.getIP()
 
 
 def main():
@@ -50,11 +51,11 @@ def add_dirs():
             if not sf.checking_dir_when_adding(form.dir.data):
                 return render_template('add_dirs.html',
                                        message="Название путя не корректно", title='Add Folder',
-                                       form=form)
+                                       form=form, ip=ip)
             if sf.does_this_directory_already_exist(form.name.data, form.dir.data):
                 return render_template('add_dirs.html',
                                        message="Данная папка уже есть в доступе у пользователя", title='Add Folder',
-                                       form=form)
+                                       form=form, ip=ip)
             all_user_dirs = sf.available_user_addresses(form.name.data)
             all_user_dirs.append(form.dir.data)
             user.dirs = ','.join(all_user_dirs)
@@ -62,8 +63,8 @@ def add_dirs():
             return redirect("/")
         return render_template('add_dirs.html',
                                message="Пользователя не существует", title='Add Folder',
-                               form=form)
-    return render_template('add_dirs.html', title='Add Folder', form=form)
+                               form=form, ip=ip)
+    return render_template('add_dirs.html', title='Add Folder', form=form, ip=ip)
 
 
 # ------------------------------ login url -------------------------------
@@ -97,8 +98,8 @@ def login():
             return redirect("/")
         return render_template('login.html',
                                message="Неправильный логин или пароль",
-                               form=form)
-    return render_template('login.html', title='Login', form=form)
+                               form=form, ip=ip)
+    return render_template('login.html', title='Login', form=form, ip=ip)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -110,22 +111,20 @@ def reqister():
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Register',
                                    form=form,
-                                   message="Password mismatch")
+                                   message="Password mismatch", ip=ip)
         session = db_session.create_session()
         if session.query(User).filter(User.name == form.name.data).first():
             return render_template('register.html', title='Register',
                                    form=form,
-                                   message="This user already exists.")
+                                   message="This user already exists.", ip=ip)
         if not current_user.is_authenticated:
             return redirect('no_access/only registered users can create accounts')
-        user = User(
-            name=form.name.data
-        )
+        user = User(name=form.name.data)
         user.set_password(form.password.data)
         session.add(user)
         session.commit()
         return redirect('/login')
-    return render_template('register.html', title='Register', form=form)
+    return render_template('register.html', title='Register', form=form, ip=ip)
 
 
 # ------------------------------ error url ------------------------------
@@ -134,7 +133,7 @@ def reqister():
 @app.route('/no_access/')
 @app.route('/no_access/<reason>')
 def no_access(reason="None specified"):
-    return render_template('no_access.html', reason=reason)
+    return render_template('no_access.html', reason=reason, ip=ip)
 
 
 # ------------------------------ quick url -----------------------------
@@ -161,7 +160,7 @@ def quick(src=None):
                     'isq': True,
                     'fdrc': '/qs/' + sf.convert_path(src)
                 }
-                return render_template('folder.html', **args)  # рендерим папку
+                return render_template('folder.html', **args, ip=ip)  # рендерим папку
         else:  # если нету входа в аккаунт но мы лезем в файлы то выбрасываем на no_access
             return redirect('/no_access/only users with certain access can reach this file')
     else:  # если просто /q без аргумента
@@ -187,7 +186,7 @@ def quickset(src=None):
                     'isq': True,
                     'fdrc': '/q/' + sf.convert_path(src)
                 }
-                return render_template('qsfolder.html', **args)  # рендерим папку
+                return render_template('qsfolder.html', **args, ip=ip)  # рендерим папку
         else:  # если нету входа в аккаунт но мы лезем в файлы то выбрасываем на no_access
             return redirect('/no_access/only admin has permission to perform this action')
     else:  # если просто /q без аргумента
@@ -202,6 +201,8 @@ def index():
     args = {
         'quick_src': sf.quick_share(),
         'ip': sf.getIP(),
+        'id_index': True
+
     }
     for key in gv.formats.keys():
         if sf.quick_share(ret='extension') in gv.formats[key]:
