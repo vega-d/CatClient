@@ -147,7 +147,7 @@ def quick(src=None):
     if current_user.is_authenticated:
         if src:
             print('trying to access path', [src], [src_split])
-            if src_split[-1]:
+            if src_split[-1] and os.path.isfile(src):
                 return send_from_directory(*src_split)
             else:
                 args = {
