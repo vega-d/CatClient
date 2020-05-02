@@ -139,9 +139,10 @@ def no_access(reason="None specified"):
 
 # ------------------------------ quick url -----------------------------
 
-@app.route('/q')
+@app.route('/q/')
 @app.route('/q/<src>')
 def quick(src=None):
+    print(src)
     if src:
         src = src.replace(gv.url_path_separation, '/')
         src_split = os.path.split(src)
