@@ -84,7 +84,11 @@ def logout():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect('no_access/Ты уже вошел в аккаунт, выйди и тогда заходи)')
+
     form = LoginForm()
+
     if form.validate_on_submit():
         session = db_session.create_session()
         user = session.query(User).filter(User.name == form.name.data).first()
@@ -101,7 +105,7 @@ def login():
 def reqister():
     form = RegisterForm()
     if not current_user.is_authenticated or current_user.name != 'admin':
-        return redirect('no_access/only registered users can create accounts')
+        return redirect('no_access/Только администраторы могу создать аккаунт, пожалуйста обратитесь к администратору')
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Register',
