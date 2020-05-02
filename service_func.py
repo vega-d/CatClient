@@ -113,13 +113,21 @@ def generateQR():
 
 
 def convert_path(path):
-    return path.replace('/', gv.url_path_separation)
+    return path.replace('/', gv.url_path_separation).replace('\\', gv.url_path_separation)
 
 
 def generate_dir(path):
     import os
     list_dir = os.listdir(path)
     ret = []
+
+    split_path = os.path.split(path)
+    if split_path[-1]:
+        ret.append((
+            '/q/' + convert_path('/'.join(split_path[:-1])),
+            '..'
+        ))
+
     for i in list_dir:
         template = (
             '/q/' + convert_path(os.path.join(path, i)),
