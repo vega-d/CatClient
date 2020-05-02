@@ -12,11 +12,9 @@ def check_password(password, hash):
     return check_password_hash(hash, password)
 
 
-def quick_share(quick_sync=None, ret=None):
+def quick_share(ret=None):
     if ret == 'extension':
         return quick_share().split('.')[-1]
-    if quick_sync:
-        gv.quick_sync = quick_sync
     return gv.quick_src if gv.quick_src else gv.no_image
 
 
@@ -139,3 +137,44 @@ def generate_dir(path):
         )
         ret.append(template)
     return ret
+
+
+def qsgenerate_dir(path):
+    import os
+    try:
+        list_dir = os.listdir(path)
+    except PermissionError as e:
+        return [('/qs/' + convert_path(os.path.split(path)[0]),
+                 'Sorry, you have no permissions. Click here to go back')]
+    ret = []
+
+    split_path = os.path.split(path)
+    if split_path[-1]:
+        ret.append((
+            '/qs/' + convert_path('/'.join(split_path[:-1])),
+            '...'
+        ))
+
+    for i in list_dir:
+        template = (
+            '/qs/' + convert_path(os.path.join(path, i)),
+            i
+        )
+        ret.append(template)
+    return ret
+
+
+def setqs(src):
+    import os
+    from shutil import copyfile
+    cwd = os.getcwd()
+    path, filename = os.path.split(src)
+    extension = filename.split('.')[-1]
+
+    if gv.quick_src:
+        os.remove(os.path.join(cwd, gv.quick_src))
+    dst = cwd + '/static/qs.' + extension
+    with open(dst, 'w+'):
+        pass
+    copyfile(src, dst)
+    gv.quick_src = '/static/qs.' + extension

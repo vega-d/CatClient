@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Folder {{ path }}</h1>
+<h2>Choosing quick share item.</h2>
+<h3>Click on file to make it QS or click on folder to go there</h3>
+
+{% for item in list %}
+<li><a href="{{ item[0] }}">{{ item[1] }}</a></li>
+{% endfor %}
+
+{% endblock %}

@@ -8,7 +8,7 @@ debug = True
 url_path_separation = ';;'
 # <==> ----- ----- ----- <==>
 formats = {
-    'vid': ['mp4', 'avi', 'mkv'],
+    'vid': ['mp4', 'avi'],
     'pic': ['png', 'jpg', 'jpeg', 'gif'],
     'aud': ['mp3', 'ogg']
 }

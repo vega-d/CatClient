@@ -15,11 +15,11 @@
   <div class="row">
 
       <div class="col-sm">
-        <a>
+        <div>
             {% if quick_type == "pic" %}
             <img src="{{ quick_src }}"  class="rounded" alt="oops, no quick share uploaded" height="200"/>
             {% elif quick_type == "vid" %}
-            <video width="640" height="480" controls>
+            <video controls>
                 <source src="{{ quick_src }}" type="video">
                 Your browser does not support the video tag.
             </video>
@@ -29,9 +29,10 @@
                 Your browser does not support the audio element.
             </audio>
             {% else %}
-                <a class="btn btn-primary" download="{{ quick_share }}">Download</a>
+                <p>Apparently, we can't preview the file :(</p>
             {% endif %}
-        </a>
+            <a class="btn btn-primary" href="{{ quick_src }}">download as is</a>
+        </div>
       </div>
 
     <div class="col-sm">

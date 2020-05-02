@@ -35,6 +35,10 @@
         <div>
         {% if current_user.is_authenticated %}
         {% if current_user.type_user == "admin" %}
+            {% if isq %}
+            <a class="btn btn-secondary" href="{{ fdrc }}">Switch over the mode</a>
+            {% endif %}
+
             <div class="btn-group" style="
                                             margin-right: 7px;
                                             margin-left: 7px;">
@@ -43,7 +47,7 @@
               </button>
               <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item" href="/register" type="button">Register user</a>
-                <a class="dropdown-item" href="/add_dirs" type="button"> Add folder </a>
+                <a class="dropdown-item" href="/add_dirs" type="button"> Add folder to user </a>
               </div>
             </div>
         {% endif %}

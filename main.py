@@ -156,14 +156,42 @@ def quick(src=None):
             else:  # если зашло сюда значит мы открываем папку
                 args = {
                     'path': src,  # путь папки
-                    'list': sf.generate_dir(src)  # ее содержимое в виде листа из кортежей.
+                    'list': sf.generate_dir(src),  # ее содержимое в виде листа из кортежей.
                     # пример кортежа ('/q/C:;;Users;;', 'Users')
+                    'isq': True,
+                    'fdrc': '/qs/' + sf.convert_path(src)
                 }
                 return render_template('folder.html', **args)  # рендерим папку
         else:  # если нету входа в аккаунт но мы лезем в файлы то выбрасываем на no_access
             return redirect('/no_access/only users with certain access can reach this file')
     else:  # если просто /q без аргумента
         return send_from_directory(*os.path.split(sf.quick_share()))
+
+
+@app.route('/qs/<src>')
+@app.route('/qs/')
+def quickset(src=None):
+    if src:  # если у нас надо получить какой-то конкретный файл или папку
+        src = src.replace(gv.url_path_separation, '/')  # конвертируем C:;;dir;;dir2 в нормальный формат с /
+        src_split = os.path.split(src)
+        # отделяем путь от конечный пункта, то есть имя папки или файла который надо открыть
+
+        if current_user.name == 'admin':
+            if src_split[-1] and os.path.isfile(src):  # если мы открываем файл дать его в чистом виде
+                sf.setqs(src)
+                return redirect('/q/' + sf.convert_path(src_split[0]))
+            else:  # если зашло сюда значит мы открываем папку
+                args = {
+                    'path': src,  # путь папки
+                    'list': sf.qsgenerate_dir(src),  # ее содержимое в виде листа из кортежей.
+                    'isq': True,
+                    'fdrc': '/q/' + sf.convert_path(src)
+                }
+                return render_template('qsfolder.html', **args)  # рендерим папку
+        else:  # если нету входа в аккаунт но мы лезем в файлы то выбрасываем на no_access
+            return redirect('/no_access/only admin has permission to perform this action')
+    else:  # если просто /q без аргумента
+        return redirect('/no_access/only admin has permission to perform this action')
 
 
 # ------------------------------ main url ------------------------------
