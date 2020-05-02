@@ -125,7 +125,7 @@ def generate_dir(path):
     if split_path[-1]:
         ret.append((
             '/q/' + convert_path('/'.join(split_path[:-1])),
-            '..'
+            '...'
         ))
 
     for i in list_dir:
