@@ -166,14 +166,21 @@ def qsgenerate_dir(path):
 
 def setqs(src):
     import os
+    import sys
     from shutil import copyfile
     cwd = os.getcwd()
     path, filename = os.path.split(src)
     extension = filename.split('.')[-1]
-
-    if gv.quick_src:
-        os.remove(os.path.join(cwd, gv.quick_src))
-    dst = cwd + '/static/qs.' + extension
+    # -----debug
+    print(cwd, 'cwd---------')
+    print(extension, 'extension--------')
+    print(gv.quick_src, 'gv.qs')
+    print(src, 'src')
+    print(str(sys.path[0]), 'sys[path[0]')
+    # ----- debug end
+    # if gv.quick_src:
+     #   os.remove(os.path.join(cwd, gv.quick_src))
+    dst = str(sys.path[0]) + '/static/qs.' + extension
     with open(dst, 'w+'):
         pass
     copyfile(src, dst)
