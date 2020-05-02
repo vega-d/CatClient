@@ -1,4 +1,5 @@
 from werkzeug.security import generate_password_hash, check_password_hash
+
 import global_var as gv
 
 
@@ -11,7 +12,11 @@ def check_password(password, hash):
     return check_password_hash(hash, password)
 
 
-def quick_image():
+def quick_share(quick_sync=None, ret=None):
+    if ret == 'extension':
+        return quick_share().split('.')[-1]
+    if quick_sync:
+        gv.quick_sync = quick_sync
     return gv.quick_src if gv.quick_src else gv.no_image
 
 
@@ -105,3 +110,20 @@ def generateQR():
 
     img = qrcode.make('http://' + getIP() + ':' + str(gv.port))
     img.save("static/img/qr.png")
+
+
+def convert_path(path):
+    return path.replace('/', gv.url_path_separation)
+
+
+def generate_dir(path):
+    import os
+    list_dir = os.listdir(path)
+    ret = []
+    for i in list_dir:
+        template = (
+            '/q/' + convert_path(os.path.join(path, i)),
+            i
+        )
+        ret.append(template)
+    return ret

@@ -1,5 +1,15 @@
-quick_src = ''
-no_image = 'static/img/no_image.jpg'
-debug = True
+# <==> ----- ----- ----- <==>
 host = '0.0.0.0'
 port = 80
+
+quick_src = r''
+no_image = r'static/img/no_image.jpg'
+debug = True
+url_path_separation = ';;'
+# <==> ----- ----- ----- <==>
+formats = {
+    'vid': ['mp4', 'avi'],
+    'pic': ['png', 'jpg', 'jpeg', 'gif'],
+    'aud': ['mp3', 'ogg']
+}
+# <==> ----- ----- ----- <==>

@@ -16,9 +16,21 @@
 
       <div class="col-sm">
         <a>
-            <div class="img">
-                <img src="{{ quick_src }}"  class="rounded" alt="oops, no quick share uploaded" height="200"/>
-            </div>
+            {% if quick_type == "pic" %}
+            <img src="{{ quick_src }}"  class="rounded" alt="oops, no quick share uploaded" height="480"/>
+            {% elif quick_type == "vid" %}
+            <video width="640" height="480" controls>
+                <source src="{{ quick_src }}" type="video">
+                Your browser does not support the video tag.
+            </video>
+            {% elif quick_type == "aud" %}
+            <audio controls>
+                <source src="{{ quick_src }}" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+            {% else %}
+                <a class="btn btn-primary" download="{{ quick_share }}">Download</a>
+            {% endif %}
         </a>
       </div>
 

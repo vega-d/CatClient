@@ -22,9 +22,9 @@ sf.generateQR()
 
 def main():
     app.run(
-            port=gv.port,
-            host=gv.host
-            )
+        port=gv.port,
+        host=gv.host
+    )
 
 
 # ----------------------------- service url ------------------------------
@@ -133,12 +133,46 @@ def no_access(reason="None specified"):
     return render_template('no_access.html', reason=reason)
 
 
+# ------------------------------ quick url -----------------------------
+
+@app.route('/q')
+@app.route('/q/<src>')
+def quick(src=None):
+    src = src.replace(gv.url_path_separation, '/')
+    src_split = os.path.split(src)
+    if current_user.is_authenticated:
+        if src:
+            print('trying to access path', [src], [src_split])
+            if src_split[-1]:
+                return send_from_directory(*src_split)
+            else:
+                args = {
+                    'path': src,
+                    'list': sf.generate_dir(src)
+                }
+                return render_template('folder.html', **args)
+        else:
+            return send_from_directory(*os.path.split(sf.quick_share()))
+    else:
+        if src:
+            return redirect('/no_access/only users with certain access can reach this file')
+        else:
+            return send_from_directory(*os.path.split(sf.quick_share()))
+
+
 # ------------------------------ main url ------------------------------
 
 
 @app.route("/")
 def index():
-    args = {'quick_src': sf.quick_image(), 'ip': sf.getIP()}
+    args = {
+        'quick_src': sf.quick_share(),
+        'ip': sf.getIP(),
+    }
+    for key in gv.formats.keys():
+        if sf.quick_share(ret='extension') in gv.formats[key]:
+            args['quick_type'] = key
+            print(key, '-', sf.quick_share())
 
     return render_template("index.html", **args)
 
