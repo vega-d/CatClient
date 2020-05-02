@@ -142,10 +142,11 @@ def no_access(reason="None specified"):
 @app.route('/q')
 @app.route('/q/<src>')
 def quick(src=None):
-    src = src.replace(gv.url_path_separation, '/')
-    src_split = os.path.split(src)
-    if current_user.is_authenticated:
-        if src:
+    if src:
+        src = src.replace(gv.url_path_separation, '/')
+        src_split = os.path.split(src)
+
+        if current_user.is_authenticated:
             print('trying to access path', [src], [src_split])
             if src_split[-1] and os.path.isfile(src):
                 return send_from_directory(*src_split)
@@ -156,12 +157,9 @@ def quick(src=None):
                 }
                 return render_template('folder.html', **args)
         else:
-            return send_from_directory(*os.path.split(sf.quick_share()))
-    else:
-        if src:
             return redirect('/no_access/only users with certain access can reach this file')
-        else:
-            return send_from_directory(*os.path.split(sf.quick_share()))
+    else:
+        return send_from_directory(*os.path.split(sf.quick_share()))
 
 
 # ------------------------------ main url ------------------------------
