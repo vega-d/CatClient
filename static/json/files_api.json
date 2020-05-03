@@ -1,0 +1,49 @@
+// GET api/users (get all dirs about users) -----------
+{
+  "users": [
+    {"Veseha": "dir,dir,dir"},
+    {"Lunar": "dir,dir,dir"}
+  ]
+}
+
+// GET api/user/1 (get dir about one user) -------------
+{
+  "dirs": "dir,dir,dir"
+}
+
+// PUT api/user/1 (Edit dirs for one user) -------------
+print(put('http://localhost/api/user/1',
+           json={'user_id': 1,
+                 'dirs': 'dir,dir,dir'}).json())
+{
+  "success": "OK"
+}
+// or
+{
+  "error": "user not found"
+}
+
+// POST api/user/2 (Create new user) ---------------
+print(post('http://localhost/api/user/2',
+           json={"name": "Allah",
+                  "hashed_password": "passhash",
+                 "dirs": "dir,dir,dir"
+                  "type_user": "user"}).json())
+{
+  "success": "OK"
+}
+// or
+{
+  "error": "need more info"
+}
+
+// DELETE api/user/1 (Delete user number one)
+print(delete('http://localhost:5000/api/news/1').json())
+
+{
+  "error": "OK"
+}
+// or
+{
+  "error": "not found"
+}

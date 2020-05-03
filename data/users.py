@@ -7,6 +7,8 @@ from flask_login import UserMixin
 
 
 class User(SqlAlchemyBase, UserMixin):
+    __table_args__ = {'extend_existing': True}
+
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
 

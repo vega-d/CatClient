@@ -9,6 +9,7 @@ import service_func as sf
 from data import db_session
 from data.classes import LoginForm, RegisterForm, AddDirsForm
 from data.users import User
+from data.settings import Settings
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -123,6 +124,11 @@ def reqister():
         user.set_password(form.password.data)
         session.add(user)
         session.commit()
+        for name_user in session.query(User).filter(User.name == form.name.data):
+            settings = Settings(id=name_user.id, token='12345')
+        session.add(settings)
+        session.commit()
+
         return redirect('/login')
     return render_template('register.html', title='Register', form=form, ip=ip)
 
