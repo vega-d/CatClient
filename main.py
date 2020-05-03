@@ -10,6 +10,10 @@ from data import db_session
 from data.classes import LoginForm, RegisterForm, AddDirsForm
 from data.users import User
 from data.settings import Settings
+import api_files
+from flask_restful import reqparse, abort, Api, Resource
+from api_resources import File, Files
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -23,11 +27,18 @@ ip = sf.getIP()
 
 
 def main():
+    # db_session.global_init("db/blogs.sqlite")
+    # app.register_blueprint(api_files.blueprint)
     app.run(
         port=gv.port,
         host=gv.host
     )
+# ----------------------------- api ------------------------------
 
+
+api = Api(app)
+api.add_resource(Files, '/api/users')
+api.add_resource(File, '/api/users/<int:news_id>')
 
 # ----------------------------- service url ------------------------------
 
