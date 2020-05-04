@@ -38,7 +38,7 @@ def main():
 
 api = Api(app)
 api.add_resource(Files, '/api/users')
-api.add_resource(File, '/api/users/<int:news_id>')
+api.add_resource(File, '/api/users/<int:id_user>')
 
 # ----------------------------- service url ------------------------------
 

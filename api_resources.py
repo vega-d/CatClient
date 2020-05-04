@@ -7,14 +7,44 @@ from data.users import User
 
 class Files(Resource):
     def get(self):
+        """
+        :return:
+            {
+              "users": [
+                {"Veseha": "dir,dir,dir"},
+                {"Lunar": "dir,dir,dir"}
+              ]
+            }
+        """
         session = db_session.create_session()
         user = session.query(User).all()
         users = {}
         for i in user:
-            users[i.name] = i.dirs
+            users[int(i.id)] = [i.name, i.dirs]
         return jsonify({'users': users})
 
+
+class File(Resource):
+    def get(self, id_user):
+        """
+        :param id_user:
+        :return:
+        {
+            "dirs": "dir,dir,dir"
+        }
+        """
+        if user_found(id_user):
+            return jsonify({"error": True})
+        session = db_session.create_session()
+        user = session.query(User).get(id_user)
+        dirs_user = user.dirs
+        return jsonify({'dirs': dirs_user})
+
     def post(self):
+        """
+        not work
+        :return:
+        """
         args = parser.parse_args()
         session = db_session.create_session()
         # news = News(
@@ -28,10 +58,13 @@ class Files(Resource):
         session.commit()
         return jsonify({'success': 'OK'})
 
-
-class File(Resource):
     def delete(self, news_id):
-        abort_if_news_not_found(news_id)
+        """
+        not work
+        :param news_id:
+        :return:
+        """
+        user_found(news_id)
         session = db_session.create_session()
         # news = session.query(News).get(news_id)
         # session.delete(news)
@@ -43,10 +76,12 @@ class Users(Resource):
     None
 
 
-def abort_if_news_not_found(news_id):
+def user_found(id_user):
     session = db_session.create_session()
-    # news = session.query(News).get(news_id)
-    # if not news:
-    #     abort(404, message=f"News {news_id} not found")
+    user = session.query(User).get(id_user)
+    if not user:
+        return True
+    return False
+
 
 
