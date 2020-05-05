@@ -137,8 +137,8 @@ def reqister():
         user.set_password(form.password.data)
         session.add(user)
         session.commit()
-        for name_user in session.query(User).filter(User.name == form.name.data):
-            settings = Settings(id=name_user.id, token='12345')
+        user_name = session.query(User).filter(User.name == form.name.data).first()
+        settings = Settings(id=user_name.id, token='12345')
         session.add(settings)
         session.commit()
 
