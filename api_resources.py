@@ -119,3 +119,4 @@ class Tokens(Resource):
         user_settings.token = generate_token()
         session.commit()
         return jsonify({"error": "OK"})
+    # delete me
