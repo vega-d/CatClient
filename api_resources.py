@@ -1,12 +1,14 @@
-from flask_restful import reqparse, abort, Api, Resource
-from flask import Flask, render_template, redirect, request, make_response, session, abort, Blueprint, jsonify
 import parser
+
+from flask import jsonify
+from flask_restful import Resource
+
 from data import db_session
 from data.users import User
 
 
-class Files(Resource):
-    def get(self):
+class Userlist(Resource):
+    def get(self, token):
         """
         :return:
             {
@@ -16,16 +18,17 @@ class Files(Resource):
               ]
             }
         """
+        print('token', token)
         session = db_session.create_session()
-        user = session.query(User).all()
-        users = {}
-        for i in user:
-            users[int(i.id)] = [i.name, i.dirs]
-        return jsonify({'users': users})
+        userlist = session.query(User).all()
+
+        users = [(i.name, i.dirs) for i in userlist]
+        ret = jsonify({'users': users})
+        return ret
 
 
-class File(Resource):
-    def get(self, id_user):
+class Userget(Resource):
+    def get(self, id_user, token):
         """
         :param id_user:
         :return:
@@ -33,6 +36,7 @@ class File(Resource):
             "dirs": "dir,dir,dir"
         }
         """
+        print('token', token)
         if user_found(id_user):
             return jsonify({"error": True})
         session = db_session.create_session()
@@ -47,14 +51,6 @@ class File(Resource):
         """
         args = parser.parse_args()
         session = db_session.create_session()
-        # news = News(
-        #     title=args['title'],
-        #     content=args['content'],
-        #     user_id=args['user_id'],
-        #     is_published=args['is_published'],
-        #     is_private=args['is_private']
-        # )
-        # session.add(news)
         session.commit()
         return jsonify({'success': 'OK'})
 
@@ -66,8 +62,6 @@ class File(Resource):
         """
         user_found(news_id)
         session = db_session.create_session()
-        # news = session.query(News).get(news_id)
-        # session.delete(news)
         session.commit()
         return jsonify({'success': 'OK'})
 

@@ -43,7 +43,7 @@ def getIP():
         debugOutput(r"""you're running MacOS, i'm not gonna support that shit.""")  # sorry
 
 
-def available_user_addresses(user_name, address_dir=''):
+def available_user_addresses(user_name, address_dir=None):
     from data import db_session
     from data.users import User
 
@@ -54,8 +54,10 @@ def available_user_addresses(user_name, address_dir=''):
         session = db_session.create_session()
         user = session.query(User).filter(User.name == user_name).first()
         if user.dirs:
-            dirs_user = user.dirs.split(',')
+            dirs_user = [i.replace(r'\\', '/').replace('\\', '/') for i in user.dirs.split(',')]
+
             for dir in dirs_user:
+
                 if dir in address_dir:
                     return True
         return False
@@ -66,7 +68,8 @@ def available_user_addresses(user_name, address_dir=''):
         session = db_session.create_session()
         user = session.query(User).filter(User.name == user_name).first()
         if user.dirs:
-            dirs_user = user.dirs.split(',')
+            dirs_user = [i.replace(r'\\', '/').replace('\\', '/') for i in user.dirs.split(',')]
+
             return dirs_user
         return []
 
@@ -110,8 +113,14 @@ def generateQR():
     img.save("static/img/qr.png")
 
 
-def convert_path(path):
-    return path.replace('/', gv.url_path_separation).replace('\\', gv.url_path_separation)
+def convert_path(path, link=False):
+    ll = path.replace('/', gv.url_path_separation).replace('\\', gv.url_path_separation)
+    if link:
+        if link == 'qs':
+            return '/qs/' + ll
+        else:
+            return '/q/' + ll
+    return ll
 
 
 def generate_dir(path):
@@ -171,17 +180,13 @@ def setqs(src):
     cwd = os.getcwd()
     path, filename = os.path.split(src)
     extension = filename.split('.')[-1]
-    # -----debug
-    print(cwd, 'cwd---------')
-    print(extension, 'extension--------')
-    print(gv.quick_src, 'gv.qs')
-    print(src, 'src')
-    print(str(sys.path[0]), 'sys[path[0]')
-    # ----- debug end
-    # if gv.quick_src:
-     #   os.remove(os.path.join(cwd, gv.quick_src))
     dst = str(sys.path[0]) + '/static/qs.' + extension
     with open(dst, 'w+'):
         pass
     copyfile(src, dst)
     gv.quick_src = '/static/qs.' + extension
+
+
+def generate_token():
+    import secrets
+    return secrets.token_urlsafe(16)

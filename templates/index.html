@@ -35,34 +35,15 @@
         </div>
       </div>
 
-    <div class="col-sm">
-        <div class="text-right">
-            <img src="static/img/qr.png" class="rounded" alt="..." width="200" height="200">
-                <figcaption> QR code to go to the site (delete this plz) </figcaption>
-                <figcaption>
-                    <footer class="blockquote-footer">
-                        Address: {{ ip }}
-                    </footer>
-                </figcaption>
-        </div>
-    </div>
 
   </div>
 </div>
 
-
-<!--<p>-->
-<!--    <a>-->
-<!--        <div>-->
-<!--            <svg height="60" width="200">-->
-<!--              <text x="120" y="40" fill="#FFFFFF">-->
-<!--                  address:-->
-<!--              </text>-->
-<!--            </svg>-->
-<!--            <font size="50" horiz-adv-x="2">{{ ip }}    </font>-->
-
-<!--        </div>-->
-<!--    </a>-->
-<!--</p>-->
+<div class="container" style="margin-top: 15px">
+    <p>Allowed root directories for you:</p>
+{% for dir in avdirs %}
+    <a href="{{ dir[0] }}" class="btn btn-secondary">{{ dir[1] }}</a>
+{% endfor %}
+</div>
 
 {% endblock %}

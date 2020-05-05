@@ -3,17 +3,15 @@ import os
 
 from flask import Flask, render_template, redirect, send_from_directory
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask_restful import Api
 
 import global_var as gv
 import service_func as sf
+from api_resources import Userget, Userlist
 from data import db_session
 from data.classes import LoginForm, RegisterForm, AddDirsForm
-from data.users import User
 from data.settings import Settings
-import api_files
-from flask_restful import reqparse, abort, Api, Resource
-from api_resources import File, Files
-
+from data.users import User
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -33,12 +31,15 @@ def main():
         port=gv.port,
         host=gv.host
     )
+
+
 # ----------------------------- api ------------------------------
 
 
 api = Api(app)
-api.add_resource(Files, '/api/users')
-api.add_resource(File, '/api/users/<int:id_user>')
+api.add_resource(Userlist, '/api/<token>/users')
+api.add_resource(Userget, '/api/<token>/users/<int:id_user>')
+
 
 # ----------------------------- service url ------------------------------
 
@@ -69,7 +70,8 @@ def add_dirs():
                                        message="Данная папка уже есть в доступе у пользователя", title='Add Folder',
                                        form=form, ip=ip)
             all_user_dirs = sf.available_user_addresses(form.name.data)
-            all_user_dirs.append(form.dir.data)
+            appeandable = form.dir.data.replace(r'\\', '/').replace('\\', '/')
+            all_user_dirs.append(appeandable)
             user.dirs = ','.join(all_user_dirs)
             session.commit()
             return redirect("/")
@@ -140,7 +142,7 @@ def reqister():
         session.add(settings)
         session.commit()
 
-        return redirect('/login')
+        return redirect('/')
     return render_template('register.html', title='Register', form=form, ip=ip)
 
 
@@ -164,8 +166,10 @@ def quick(src=None):
         src = src.replace(gv.url_path_separation, '/')  # конвертируем C:;;dir;;dir2 в нормальный формат с /
         src_split = os.path.split(src)
         # отделяем путь от конечный пункта, то есть имя папки или файла который надо открыть
-
         if current_user.is_authenticated:
+
+            if not sf.available_user_addresses(current_user.name, address_dir=src):
+                return redirect('/no_access/You have no access to this folder or file.')
 
             if src_split[-1] and os.path.isfile(src):  # если мы открываем файл дать его в чистом виде
                 return send_from_directory(*src_split)
@@ -218,9 +222,12 @@ def index():
     args = {
         'quick_src': sf.quick_share(),
         'ip': sf.getIP(),
-        'id_index': True
-
+        'id_index': True,
+        'avdirs': []
     }
+    if current_user.is_authenticated:
+        args['avdirs'] = [(sf.convert_path(i, link=True), i) for i in sf.available_user_addresses(current_user.name)]
+    print(args['avdirs'])
     for key in gv.formats.keys():
         if sf.quick_share(ret='extension') in gv.formats[key]:
             args['quick_type'] = key
