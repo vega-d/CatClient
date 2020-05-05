@@ -1,14 +1,12 @@
-import datetime
 import sqlalchemy
-from werkzeug.security import generate_password_hash, check_password_hash
-from .db_session import SqlAlchemyBase
-from sqlalchemy import orm
 from flask_login import UserMixin
+
+from .db_session import SqlAlchemyBase
 
 
 class Settings(SqlAlchemyBase, UserMixin):
     def __repr__(self):
-        return '<User>' + ' ' + str(self.id) + ' ' + self.name
+        return '<Settings>' + ' ' + str(self.id)
 
     __tablename__ = 'settings'
     id_settings = sqlalchemy.Column(sqlalchemy.Integer,
