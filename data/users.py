@@ -1,18 +1,22 @@
 import datetime
+
 import sqlalchemy
-from werkzeug.security import generate_password_hash, check_password_hash
-from .db_session import SqlAlchemyBase
-from sqlalchemy import orm
 from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from .db_session import SqlAlchemyBase
 
 
 class User(SqlAlchemyBase, UserMixin):
     __table_args__ = {'extend_existing': True}
 
-    def set_password(self, password):
-        self.hashed_password = generate_password_hash(password)
+    def set_password(self, password, is_hash=False):
+        self.hashed_password = password if is_hash else generate_password_hash(password)
 
-    def check_password(self, password):
+    def check_password(self, password, is_hash=False):
+        if is_hash:
+            import secrets
+            return secrets.compare_digest(password, self.hashed_password)
         return check_password_hash(self.hashed_password, password)
 
     def __repr__(self):

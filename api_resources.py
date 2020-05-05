@@ -3,6 +3,7 @@ import parser
 from flask import jsonify
 from flask_restful import Resource
 
+import service_func as sf
 from data import db_session
 from data.users import User
 
@@ -78,4 +79,30 @@ def user_found(id_user):
     return False
 
 
+class Auth(Resource):
+    def get(self, login, hash):
+        session = db_session.create_session()
+        user = session.query(User).filter(User.name == login).first()
+        ret = {}
+        if user and user.check_password(hash, is_hash=True):
+            ret['error'] = 'OK'
+        else:
+            ret['error'] = 'WrongCredentials'
+            return ret
+        token = sf.get_token(login)
+        if token:
+            ret['token'] = token
+        else:
+            ret['error'] = 'NoToken'
+        return ret
 
+    def post(self):
+        pass
+
+
+class Tokens(Resource):
+    def get(self):
+        pass
+
+    def post(self):
+        pass
