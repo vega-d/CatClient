@@ -102,6 +102,9 @@ class Auth(Resource):
 
 
 class Tokens(Resource):
+    def get(self):
+        pass
+
     def post(self, login, hash):
         from service_func import generate_token
         session = db_session.create_session()
@@ -116,8 +119,3 @@ class Tokens(Resource):
         user_settings.token = generate_token()
         session.commit()
         return jsonify({"error": "OK"})
-
-    def get(self):
-        pass
-
-

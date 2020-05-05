@@ -192,7 +192,6 @@ def generate_token():
     return secrets.token_urlsafe(16)
 
 
-
 def id_to_login(id):
     from data import db_session
     from data.users import User
