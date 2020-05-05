@@ -190,3 +190,59 @@ def setqs(src):
 def generate_token():
     import secrets
     return secrets.token_urlsafe(16)
+
+
+def id_to_login(id):
+    from data import db_session
+    from data.users import User
+    from data.settings import Settings
+    session = db_session.create_session()
+    login = session.query(User).filter(User.id == id).first
+    if not login:
+        return 'error'
+    return login.name
+
+
+def login_to_id(login):
+    from data import db_session
+    from data.users import User
+    from data.settings import Settings
+    session = db_session.create_session()
+    id = session.query(User).filter(User.name == login).first
+    if not id:
+        return 'error'
+    return login.id
+
+
+def change_token(login, new_token, old_token=None):
+    from data import db_session
+    from data.users import User
+    from data.settings import Settings
+    session = db_session.create_session()
+    if old_token:
+        user_set = session.query(Settings).filter(Settings.id == login_to_id(login), Settings.token == old_token).first
+        if not user_set:
+            return 'error'
+        user_set.token = new_token
+        session.commit()
+        return 'ok'
+    else:
+        user_set = session.query(Settings).filter(Settings.id == login_to_id(login)).first
+        if not user_set:
+            return 'error'
+        user_set.token = new_token
+        session.commit()
+        return 'ok'
+
+
+def get_token(login):
+    from data import db_session
+    from data.users import User
+    from data.settings import Settings
+    session = db_session.create_session()
+    user_set = session.query(Settings).filter(Settings.id == login_to_id(login)).first
+    if not user_set:
+        return 'error'
+    return user_set.token
+
+
