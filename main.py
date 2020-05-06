@@ -175,6 +175,7 @@ def quick(src=None):
                 return redirect('/no_access/You have no access to this folder or file.')
 
             if src_split[-1] and os.path.isfile(src):  # если мы открываем файл дать его в чистом виде
+                # print(*src_split, '---')
                 return send_from_directory(*src_split)
             else:  # если зашло сюда значит мы открываем папку
                 args = {

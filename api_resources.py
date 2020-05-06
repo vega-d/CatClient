@@ -133,7 +133,7 @@ class Tokens(Resource):
 
 class Q(Resource):
 
-    def get(token, src):
+    def get(self, token, src):
         src = src.replace(gv.url_path_separation, '/')  # конвертируем C:;;dir;;dir2 в нормальный формат с /
         src_split = os.path.split(src)
 
@@ -141,8 +141,17 @@ class Q(Resource):
         if real:
             if sf.available_user_addresses(real, address_dir=src):
                 if src_split[-1] and os.path.isfile(src):
-                    pass      # file
+                    size_file = os.stat(src.replace(';;', '\\'))
+                    return jsonify({"type": "file",
+                                    "file": (
+                                        f"/q/{src}",
+                                        src.replace(';;', '\\'),
+                                        size_file[6]
+                                        )})
                 else:
+                    list_dirs = sf.generate_dir(src)
+                    return jsonify({"type": "folder",
+                                    "dirs": list_dirs})
                     pass  # folder
                 # serve folder or file
 
