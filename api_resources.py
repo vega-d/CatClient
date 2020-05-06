@@ -1,12 +1,14 @@
+import os
 import parser
 
 from flask import jsonify
 from flask_restful import Resource
 
+import global_var as gv
 import service_func as sf
 from data import db_session
-from data.users import User
 from data.settings import Settings
+from data.users import User
 
 
 class Userlist(Resource):
@@ -20,17 +22,24 @@ class Userlist(Resource):
               ]
             }
         """
-        print('token', token)
+
         session = db_session.create_session()
         userlist = session.query(User).all()
+        real = sf.token_to_login(token)
+        if real:
+            if real == 'admin':
+                users = [(i.name, i.dirs) for i in userlist]
+            else:
+                users = [((i.name, i.dirs) if i.name == real else None) for i in userlist]
+            ret = {'users': users}
+        else:
+            ret = {'error': 'CredentialError'}
 
-        users = [(i.name, i.dirs) for i in userlist]
-        ret = jsonify({'users': users})
-        return ret
+        return jsonify(ret)
 
 
 class Userget(Resource):
-    def get(self, id_user, token):
+    def get(self, user, token):
         """
         :param id_user:
         :return:
@@ -38,17 +47,26 @@ class Userget(Resource):
             "dirs": "dir,dir,dir"
         }
         """
-        print('token', token)
-        if user_found(id_user):
-            return jsonify({"error": True})
-        session = db_session.create_session()
-        user = session.query(User).get(id_user)
-        dirs_user = user.dirs
-        return jsonify({'dirs': dirs_user})
+
+        real = sf.token_to_login(token)
+
+        if real:
+            if not sf.get_user(sf.login_to_id(user)):
+                return jsonify({"error": 'NoUserFound'})
+            session = db_session.create_session()
+            user = session.query(User).get(sf.login_to_id(user))
+            dirs_user = user.dirs
+
+            if real == 'admin' or user.name == real:
+                return jsonify({'dirs': dirs_user})
+            else:
+                return jsonify({'error': 'CredentialError'})
+        else:
+            return jsonify({'error': 'CredentialError'})
 
     def post(self):
         """
-        not work
+        not working
         :return:
         """
         args = parser.parse_args()
@@ -62,7 +80,7 @@ class Userget(Resource):
         :param news_id:
         :return:
         """
-        user_found(news_id)
+        sf.get_user(news_id)
         session = db_session.create_session()
         session.commit()
         return jsonify({'success': 'OK'})
@@ -72,14 +90,6 @@ class Users(Resource):
     None
 
 
-def user_found(id_user):
-    session = db_session.create_session()
-    user = session.query(User).get(id_user)
-    if not user:
-        return True
-    return False
-
-
 class Auth(Resource):
     def get(self, login, hash):
         session = db_session.create_session()
@@ -87,36 +97,59 @@ class Auth(Resource):
         ret = {}
         if user and user.check_password(hash, is_hash=True):
             ret['error'] = 'OK'
-        else:
-            ret['error'] = 'WrongCredentials'
+            token = sf.get_token(login)
+            if token:
+                ret['token'] = token
+            else:
+                ret['error'] = 'NoToken'
             return ret
-        token = sf.get_token(login)
-        if token:
-            ret['token'] = token
         else:
-            ret['error'] = 'NoToken'
-        return ret
+            ret['error'] = 'CredentialError'
+            return ret
 
     def post(self):
         pass
 
 
 class Tokens(Resource):
-    def get(self):
+    def get(self, login, hash):
         pass
 
     def post(self, login, hash):
         from service_func import generate_token
         session = db_session.create_session()
-        print('one')
+
         user = session.query(User).filter(User.name == login, User.hashed_password == hash).first()
-        print('two')
+
         if not user:
             return jsonify({"error": "CredentialError"})
-        user_settings = session.query(Settings).filter(Settings.id == user.id)
+        user_settings = session.query(Settings).filter(Settings.id == user.id).first()
         if user_settings.token:
             return jsonify({"error": "TokenAlreadyExists"})
         user_settings.token = generate_token()
         session.commit()
         return jsonify({"error": "OK"})
-    # delete me
+
+
+class Q(Resource):
+
+    def get(token, src):
+        src = src.replace(gv.url_path_separation, '/')  # конвертируем C:;;dir;;dir2 в нормальный формат с /
+        src_split = os.path.split(src)
+
+        real = sf.token_to_login(token)
+        if real:
+            if sf.available_user_addresses(real, address_dir=src):
+                if src_split[-1] and os.path.isfile(src):
+                    pass      # file
+                else:
+                    pass  # folder
+                # serve folder or file
+
+            else:
+                return jsonify({'error': 'CredentialError'})
+        else:
+            return jsonify({'error': 'CredentialError'})
+
+    def post(self):
+        pass

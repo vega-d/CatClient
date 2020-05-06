@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import global_var as gv
 
 
-def generate_password(password):
+def hash_password(password):
     hashed_password = generate_password_hash(password)
     return hashed_password
 
@@ -192,11 +192,16 @@ def generate_token():
     return secrets.token_urlsafe(16)
 
 
+def compToken(login, token):
+    true_token = get_token(login)
+    return true_token == token
+
+
 def id_to_login(id):
     from data import db_session
     from data.users import User
     session = db_session.create_session()
-    login = session.query(User).filter(User.id == id).first
+    login = session.query(User).filter(User.id == id).first()
     if not login:
         return 'error'
     return login.name
@@ -216,7 +221,8 @@ def change_token(login, new_token, old_token=None):
     from data.settings import Settings
     session = db_session.create_session()
     if old_token:
-        user_set = session.query(Settings).filter(Settings.id == login_to_id(login), Settings.token == old_token).first()
+        user_set = session.query(Settings).filter(Settings.id == login_to_id(login),
+                                                  Settings.token == old_token).first()
         if not user_set:
             return 'error'
         user_set.token = new_token
@@ -242,3 +248,23 @@ def get_token(login):
     return user.token if user else 'error'
 
 
+def token_to_login(token):
+    from data import db_session
+    from data.settings import Settings
+
+    session = db_session.create_session()
+
+    ids = session.query(Settings).filter(Settings.token == token)
+    if ids:
+        id = ids[0].id
+        return id_to_login(id)
+    else:
+        return None
+
+
+def get_user(id_user):
+    from data import db_session
+    session = db_session.create_session()
+    from data.users import User
+    user = session.query(User).get(id_user)
+    return user

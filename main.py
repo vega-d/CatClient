@@ -7,7 +7,7 @@ from flask_restful import Api
 
 import global_var as gv
 import service_func as sf
-from api_resources import Userget, Userlist, Auth, Tokens
+from api_resources import Userget, Userlist, Auth, Tokens, Q
 from data import db_session
 from data.classes import LoginForm, RegisterForm, AddDirsForm
 from data.settings import Settings
@@ -38,9 +38,10 @@ def main():
 
 api = Api(app)
 api.add_resource(Userlist, '/api/<token>/users')
-api.add_resource(Userget, '/api/<token>/users/<int:id_user>')
+api.add_resource(Userget, '/api/<token>/user/<user>')
 api.add_resource(Auth, '/api/auth/<login>/<hash>')
 api.add_resource(Tokens, '/api/token/<login>/<hash>')
+api.add_resource(Q, '/api/<token>/q/<src>')
 
 
 # ----------------------------- service url ------------------------------
