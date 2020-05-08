@@ -31,7 +31,7 @@ class Userlist(Resource):
                 users = [(i.name, i.dirs) for i in userlist]
             else:
                 users = [((i.name, i.dirs) if i.name == real else None) for i in userlist]
-            ret = {'users': users}
+            ret = {'users': users, 'error': 'OK'}
         else:
             ret = {'error': 'CredentialError'}
 
@@ -58,7 +58,7 @@ class Userget(Resource):
             dirs_user = user.dirs
 
             if real == 'admin' or user.name == real:
-                return jsonify({'dirs': dirs_user})
+                return jsonify({'dirs': dirs_user, 'error': 'OK'})
             else:
                 return jsonify({'error': 'CredentialError'})
         else:
@@ -72,7 +72,7 @@ class Userget(Resource):
         args = parser.parse_args()
         session = db_session.create_session()
         session.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({'error': 'OK'})
 
     def delete(self, news_id):
         """
@@ -83,7 +83,7 @@ class Userget(Resource):
         sf.get_user(news_id)
         session = db_session.create_session()
         session.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({'error': 'OK'})
 
 
 class Users(Resource):
@@ -134,7 +134,7 @@ class Tokens(Resource):
 class Q(Resource):
 
     def get(self, token, src):
-        src = src.replace(gv.url_path_separation, '/')  # конвертируем C:;;dir;;dir2 в нормальный формат с /
+        src = src.replace(gv.url_path_separation, '/')
         src_split = os.path.split(src)
 
         real = sf.token_to_login(token)
@@ -147,18 +147,30 @@ class Q(Resource):
                                         f"/q/{src}",
                                         src.replace(';;', '\\'),
                                         size_file[6]
-                                        )})
+                                        ),
+                                    'error': 'OK'})
                 else:
                     list_dirs = sf.generate_dir(src)
                     return jsonify({"type": "folder",
-                                    "dirs": list_dirs})
-                    pass  # folder
-                # serve folder or file
-
+                                    "dirs": list_dirs,
+                                    'error': 'OK'})
             else:
-                return jsonify({'error': 'CredentialError'})
+                return jsonify({'error': 'AccessDenied'})
         else:
             return jsonify({'error': 'CredentialError'})
 
-    def post(self):
-        pass
+    def post(self, token, src):
+        src = src.replace(gv.url_path_separation, '/')  # конвертируем C:;;dir;;dir2 в нормальный формат с /
+        src_split = os.path.split(src)
+
+        real = sf.token_to_login(token)
+
+        if real == 'admin':
+            if src_split[-1] and os.path.isfile(src):  # если мы открываем файл дать его в чистом виде
+                sf.setqs(src)
+                return jsonify({'error': 'OK'})
+            else:
+                return jsonify({'error': 'InvalidArgumentError'})
+        else:
+            return jsonify({'error': 'CredentialError'})
+
