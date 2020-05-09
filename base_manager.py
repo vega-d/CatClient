@@ -1,12 +1,7 @@
 import sys
 import threading
-from PyQt5.QtCore import QFile, QTextStream
-from PyQt5.QtWidgets import QApplication
-from PyQt5 import QtWidgets
-import qt.style.breeze_resources
 
 from PyQt5.QtWidgets import QWidget, QApplication, QPushButton, QMenu, QAction, qApp, QSystemTrayIcon, QStyle
-from qt.main_qt import Main
 
 
 def server():
@@ -56,11 +51,7 @@ class App(QWidget):
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.show()
 
-
     def onClick(self):
-        self.main_app = Main()
-        self.main_app.show()
-
         btn = self.sender().action
         print(btn, 'action released!')
         if btn == 'start':
@@ -69,7 +60,6 @@ class App(QWidget):
                 self.start_button.setEnabled(0)
                 self.start_button.setText('server running')
 
-
     def closeEvent(self, evnt):
         if self.toclose:
             super(App, self).closeEvent(evnt)
@@ -77,13 +67,6 @@ class App(QWidget):
             evnt.ignore()
             self.hide()
 
-
-
-app_style = QtWidgets.QApplication(sys.argv)
-file = QFile(":/dark.qss")
-file.open(QFile.ReadOnly | QFile.Text)
-stream = QTextStream(file)
-app_style.setStyleSheet(stream.readAll())
 
 app = QApplication(sys.argv)
 form = App()
