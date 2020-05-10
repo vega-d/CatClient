@@ -150,7 +150,7 @@ def reqister():
     return render_template('register.html', title='Register', form=form, ip=ip)
 
 
-# ------------------------------ error url ------------------------------
+# ------------------------------ account manipulation ------------------------------
 
 
 @app.route('/change_password', methods=['GET', 'POST'])
@@ -162,9 +162,13 @@ def change_pass():
             return render_template('change_pass.html', title='Register',
                                    form=form,
                                    message="This user does not exists.", ip=ip)
-        hashed_old, hashed_new = [sf.hash_password(i) for i in [form.password.data, form.password_new.data]]
-        res = sf.change_password(form.name.data, hashed_old, hashed_new)
-        print(res)
+        # hashed_old, hashed_new = [sf.hash_password(str(i)) for i in [str(form.password.data), str(form.password_new.data)]]
+        # print(sf.hash_password('123'))
+        # print(sf.hash_password('123'))
+        # print(hashed_old)
+
+        res = sf.change_password(form.name.data, form.password.data, form.password_new.data)
+        # print(res)
         if res:
             return redirect('/')
         else:
@@ -174,6 +178,8 @@ def change_pass():
 
     return render_template('change_pass.html', title='changing password', form=form, ip=ip)
 
+
+# ------------------------------ error url ------------------------------
 
 @app.route('/no_access/')
 @app.route('/no_access/<reason>')
