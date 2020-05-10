@@ -277,6 +277,7 @@ def change_password(user_name=None, pass_old=None, pass_new=None):
             session = db_session.create_session()
             from data.users import User
             user = session.query(User).filter(User.name == user_name).first()
+            print('pass', user.hashed_password == pass_old)
             if user.hashed_password == pass_old:
                 user.hashed_password = pass_new
                 session.commit()

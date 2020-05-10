@@ -1,11 +1,10 @@
 import sys
 import threading
-from PyQt5.QtCore import QFile, QTextStream
-from PyQt5.QtWidgets import QApplication
-from PyQt5 import QtWidgets
-import qt.style.breeze_resources
 
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import QFile, QTextStream
 from PyQt5.QtWidgets import QWidget, QApplication, QPushButton, QMenu, QAction, qApp, QSystemTrayIcon, QStyle
+
 from qt.main_qt import Main
 
 
@@ -25,6 +24,7 @@ def server():
 class App(QWidget):
     def __init__(self):
         super().__init__()
+        self.main_app = Main()
         self.move(180, 100)
         self.setFixedSize(400, 300)
         self.setWindowTitle('control')
@@ -57,17 +57,15 @@ class App(QWidget):
         self.tray_icon.show()
 
     def onClick(self):
-        self.main_app = Main()
-        self.main_app.show()
-
         btn = self.sender().action
         print(btn, 'action released!')
         if btn == 'start':
             if not self.server.is_alive():
+                self.main_app.show()
+
                 self.server.start()
                 self.start_button.setEnabled(0)
                 self.start_button.setText('server running')
-
 
     def closeEvent(self, evnt):
         if self.toclose:

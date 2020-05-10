@@ -1,11 +1,9 @@
-import sqlite3
-from PyQt5.QtWidgets import QWidget, QApplication
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5 import uic
-from qt.qt_func import resource_path
-import datetime
 import sys
-from PyQt5.QtCore import Qt
+
+from PyQt5 import uic
+from PyQt5.QtWidgets import QWidget, QApplication
+
+from qt.qt_func import resource_path
 
 
 class Main(QWidget):
