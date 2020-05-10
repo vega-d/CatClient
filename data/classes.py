@@ -1,6 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField,  BooleanField, SubmitField, TextAreaField,\
-    SubmitField, ValidationError, TextField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
 
 
@@ -16,6 +15,13 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     password_again = PasswordField('Repeat password', validators=[DataRequired()])
     submit = SubmitField('To register')
+
+
+class ChangePassForm(FlaskForm):
+    name = StringField('Your login', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    password_new = PasswordField('New password', validators=[DataRequired()])
+    submit = SubmitField('change')
 
 
 class AddDirsForm(FlaskForm):

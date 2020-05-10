@@ -9,7 +9,7 @@ import global_var as gv
 import service_func as sf
 from api_resources import Userget, Userlist, Auth, Tokens, Q, ChangePassAPI
 from data import db_session
-from data.classes import LoginForm, RegisterForm, AddDirsForm
+from data.classes import LoginForm, RegisterForm, AddDirsForm, ChangePassForm
 from data.settings import Settings
 from data.users import User
 
@@ -43,7 +43,6 @@ api.add_resource(Auth, '/api/auth/<login>/<hash>')
 api.add_resource(Tokens, '/api/token/<login>/<hash>')
 api.add_resource(Q, '/api/<token>/q/<src>')
 api.add_resource(ChangePassAPI, '/api/changepass/<user>/<old_pass>/<new_pass>')
-
 
 
 # ----------------------------- service url ------------------------------
@@ -152,6 +151,28 @@ def reqister():
 
 
 # ------------------------------ error url ------------------------------
+
+
+@app.route('/change_password', methods=['GET', 'POST'])
+def change_pass():
+    form = ChangePassForm()
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        if not session.query(User).filter(User.name == form.name.data).first():
+            return render_template('change_pass.html', title='Register',
+                                   form=form,
+                                   message="This user does not exists.", ip=ip)
+        hashed_old, hashed_new = [sf.hash_password(i) for i in [form.password.data, form.password_new.data]]
+        res = sf.change_password(form.name.data, hashed_old, hashed_new)
+        print(res)
+        if res:
+            return redirect('/')
+        else:
+            return render_template('change_pass.html', title='Register',
+                                   form=form,
+                                   message="wrong credentials", ip=ip)
+
+    return render_template('change_pass.html', title='changing password', form=form, ip=ip)
 
 
 @app.route('/no_access/')
