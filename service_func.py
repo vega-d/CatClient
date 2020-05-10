@@ -268,3 +268,22 @@ def get_user(id_user):
     from data.users import User
     user = session.query(User).get(id_user)
     return user
+
+
+def change_password(user_name=None, pass_old=None, pass_new=None):
+    if user_name and pass_new and pass_old:
+        try:
+            from data import db_session
+            session = db_session.create_session()
+            from data.users import User
+            user = session.query(User).filter(User.name == user_name).first()
+            if user.hashed_password == pass_old:
+                user.hashed_password = pass_new
+                session.commit()
+            else:
+                return False
+        except Exception:
+            return False
+
+    else:
+        return False

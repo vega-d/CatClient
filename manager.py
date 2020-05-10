@@ -56,7 +56,6 @@ class App(QWidget):
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.show()
 
-
     def onClick(self):
         self.main_app = Main()
         self.main_app.show()
@@ -76,7 +75,6 @@ class App(QWidget):
         else:
             evnt.ignore()
             self.hide()
-
 
 
 app_style = QtWidgets.QApplication(sys.argv)
