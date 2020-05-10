@@ -174,3 +174,16 @@ class Q(Resource):
         else:
             return jsonify({'error': 'CredentialError'})
 
+
+class ChangePassAPI(Resource):
+    def post(self, user, old_pass, new_pass):
+        from service_func import change_password
+        error = change_password(user, old_pass, new_pass)
+        if error:
+            return jsonify({"error": "OK"})
+        else:
+            return jsonify({"error": "Error"})
+
+
+
+
