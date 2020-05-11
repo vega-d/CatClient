@@ -162,10 +162,10 @@ def change_pass():
             return render_template('change_pass.html', title='Register',
                                    form=form,
                                    message="This user does not exists.", ip=ip)
-        # hashed_old, hashed_new = [sf.hash_password(str(i)) for i in [str(form.password.data), str(form.password_new.data)]]
-        # print(sf.hash_password('123'))
-        # print(sf.hash_password('123'))
-        # print(hashed_old)
+        hashed_old, hashed_new = [sf.hash_password(str(i)) for i in [str(form.password.data), str(form.password_new.data)]]
+        print(sf.hash_password('123'))
+        print(sf.hash_password('123'))
+        print(hashed_old)
 
         res = sf.change_password(form.name.data, form.password.data, form.password_new.data)
         # print(res)

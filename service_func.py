@@ -276,13 +276,17 @@ def change_password(user_name=None, pass_old=None, pass_new=None):
             from data import db_session
             session = db_session.create_session()
             from data.users import User
-            print(pass_old)
+
             user = session.query(User).filter(User.name == user_name).first()
-            print(user.hashed_password)
+
+            print('pass_old', pass_old)
+            print('user.hashed_password', user.hashed_password)
+
             if user.check_password(pass_old):
-                print(user.name)
+                print('changed password for user')
                 user.set_password(pass_new)
                 session.commit()
+                return True
             else:
                 return False
         except Exception:

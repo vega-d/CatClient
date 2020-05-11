@@ -2,7 +2,7 @@ import datetime
 
 import sqlalchemy
 from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 
 from .db_session import SqlAlchemyBase
 
@@ -17,7 +17,7 @@ class User(SqlAlchemyBase, UserMixin):
         if is_hash:
             import secrets
             return secrets.compare_digest(password, self.hashed_password)
-        return check_password_hash(self.hashed_password, password)
+        return self.check_password(self.hashed_password, is_hash=True)
 
     def __repr__(self):
         return '<User>' + ' ' + str(self.id) + ' ' + self.name
