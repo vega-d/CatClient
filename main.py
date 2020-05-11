@@ -195,7 +195,7 @@ def change_theme():
 @app.route('/no_access/')
 @app.route('/no_access/<reason>')
 def no_access(reason="None specified"):
-    return render_template('no_access.html', reason=reason, ip=ip, dark=dark)
+    return render_template('no_access.html', reason=reason, ip=ip, dark=dark, title='No access')
 
 
 # ------------------------------ quick url -----------------------------
@@ -225,7 +225,7 @@ def quick(src=None):
                     'isq': True,
                     'fdrc': '/qs/' + sf.convert_path(src)
                 }
-                return render_template('folder.html', **args, ip=ip, dark=dark)  # рендерим папку
+                return render_template('folder.html', **args, ip=ip, dark=dark, title='Explorer')  # рендерим папку
         else:  # если нету входа в аккаунт но мы лезем в файлы то выбрасываем на no_access
             return redirect('/no_access/only users with certain access can reach this file')
     else:  # если просто /q без аргумента
@@ -251,7 +251,7 @@ def quickset(src=None):
                     'isq': True,
                     'fdrc': '/q/' + sf.convert_path(src)
                 }
-                return render_template('qsfolder.html', **args, ip=ip, dark=dark)  # рендерим папку
+                return render_template('qsfolder.html', **args, ip=ip, dark=dark, title='Set Q file')  # рендерим папку
         else:  # если нету входа в аккаунт но мы лезем в файлы то выбрасываем на no_access
             return redirect('/no_access/only admin has permission to perform this action')
     else:  # если просто /q без аргумента
@@ -279,7 +279,7 @@ def index():
             args['quick_type'] = key
             print(key, '-', sf.quick_share())
 
-    return render_template("index.html", **args, dark=dark)
+    return render_template("index.html", **args, dark=dark, title='CatClient')
 
 
 if __name__ == '__main__':
