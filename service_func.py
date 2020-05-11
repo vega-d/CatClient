@@ -294,3 +294,35 @@ def change_password(user_name=None, pass_old=None, pass_new=None):
 
     else:
         return False
+
+
+def get_theme(cur_user=None):
+    if not cur_user:
+        return True
+    id = cur_user.id
+    from data import db_session
+    session = db_session.create_session()
+    from data.settings import Settings
+    sett = session.query(Settings).filter(Settings.id == id).first()
+    print(id)
+    if sett.theme == "dark":
+        return True
+    else:
+        return False
+
+
+def change_theme(cur_user=None):
+    if not cur_user:
+        return False
+    from data import db_session
+    session = db_session.create_session()
+    from data.settings import Settings
+    sett = session.query(Settings).filter(Settings.id == cur_user.id).first()
+    if sett:
+        if sett.theme == 'dark':
+            sett.theme = 'light'
+        else:
+            sett.theme = 'dark'
+        session.commit()
+        return True
+    return False

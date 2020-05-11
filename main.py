@@ -45,7 +45,12 @@ api.add_resource(Q, '/api/<token>/q/<src>')
 api.add_resource(ChangePassAPI, '/api/changepass/<user>/<old_pass>/<new_pass>')
 
 
+# ----------------------------- other global var ------------------------------
+
+dark = sf.get_theme(current_user)
+
 # ----------------------------- service url ------------------------------
+
 
 @app.route('/favicon.ico')
 def favicon():
@@ -68,11 +73,11 @@ def add_dirs():
             if not sf.checking_dir_when_adding(form.dir.data):
                 return render_template('add_dirs.html',
                                        message="Название путя не корректно", title='Add Folder',
-                                       form=form, ip=ip)
+                                       form=form, ip=ip, dark=dark)
             if sf.does_this_directory_already_exist(form.name.data, form.dir.data):
                 return render_template('add_dirs.html',
                                        message="Данная папка уже есть в доступе у пользователя", title='Add Folder',
-                                       form=form, ip=ip)
+                                       form=form, ip=ip, dark=dark)
             all_user_dirs = sf.available_user_addresses(form.name.data)
             appeandable = form.dir.data.replace(r'\\', '/').replace('\\', '/')
             all_user_dirs.append(appeandable)
@@ -81,8 +86,8 @@ def add_dirs():
             return redirect("/")
         return render_template('add_dirs.html',
                                message="Пользователя не существует", title='Add Folder',
-                               form=form, ip=ip)
-    return render_template('add_dirs.html', title='Add Folder', form=form, ip=ip)
+                               form=form, ip=ip, dark=dark)
+    return render_template('add_dirs.html', title='Add Folder', form=form, ip=ip, dark=dark)
 
 
 # ------------------------------ login url -------------------------------
@@ -103,6 +108,7 @@ def logout():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    global dark
     if current_user.is_authenticated:
         return redirect('no_access/Ты уже вошел в аккаунт, выйди и тогда заходи)')
 
@@ -113,11 +119,12 @@ def login():
         user = session.query(User).filter(User.name == form.name.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
+            dark = sf.get_theme(current_user)
             return redirect("/")
         return render_template('login.html',
                                message="Неправильный логин или пароль",
-                               form=form, ip=ip)
-    return render_template('login.html', title='Login', form=form, ip=ip)
+                               form=form, ip=ip, dark=dark)
+    return render_template('login.html', title='Login', form=form, ip=ip, dark=dark)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -129,12 +136,12 @@ def reqister():
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Register',
                                    form=form,
-                                   message="Password mismatch", ip=ip)
+                                   message="Password mismatch", ip=ip, dark=dark)
         session = db_session.create_session()
         if session.query(User).filter(User.name == form.name.data).first():
             return render_template('register.html', title='Register',
                                    form=form,
-                                   message="This user already exists.", ip=ip)
+                                   message="This user already exists.", ip=ip, dark=dark)
         if not current_user.is_authenticated:
             return redirect('no_access/only registered users can create accounts')
         user = User(name=form.name.data)
@@ -147,7 +154,7 @@ def reqister():
         session.commit()
 
         return redirect('/')
-    return render_template('register.html', title='Register', form=form, ip=ip)
+    return render_template('register.html', title='Register', form=form, ip=ip, dark=dark)
 
 
 # ------------------------------ account manipulation ------------------------------
@@ -161,12 +168,8 @@ def change_pass():
         if not session.query(User).filter(User.name == form.name.data).first():
             return render_template('change_pass.html', title='Register',
                                    form=form,
-                                   message="This user does not exists.", ip=ip)
+                                   message="This user does not exists.", ip=ip, dark=dark)
         hashed_old, hashed_new = [sf.hash_password(str(i)) for i in [str(form.password.data), str(form.password_new.data)]]
-        print(sf.hash_password('123'))
-        print(sf.hash_password('123'))
-        print(hashed_old)
-
         res = sf.change_password(form.name.data, form.password.data, form.password_new.data)
         # print(res)
         if res:
@@ -174,9 +177,17 @@ def change_pass():
         else:
             return render_template('change_pass.html', title='Register',
                                    form=form,
-                                   message="wrong credentials", ip=ip)
+                                   message="wrong credentials", ip=ip, dark=dark)
 
-    return render_template('change_pass.html', title='changing password', form=form, ip=ip)
+    return render_template('change_pass.html', title='changing password', form=form, ip=ip, dark=dark)
+
+
+@app.route('/theme')
+def change_theme():
+    global dark
+    sf.change_theme(current_user)
+    dark = sf.get_theme(current_user)
+    return redirect('/')
 
 
 # ------------------------------ error url ------------------------------
@@ -184,7 +195,7 @@ def change_pass():
 @app.route('/no_access/')
 @app.route('/no_access/<reason>')
 def no_access(reason="None specified"):
-    return render_template('no_access.html', reason=reason, ip=ip)
+    return render_template('no_access.html', reason=reason, ip=ip, dark=dark)
 
 
 # ------------------------------ quick url -----------------------------
@@ -214,7 +225,7 @@ def quick(src=None):
                     'isq': True,
                     'fdrc': '/qs/' + sf.convert_path(src)
                 }
-                return render_template('folder.html', **args, ip=ip)  # рендерим папку
+                return render_template('folder.html', **args, ip=ip, dark=dark)  # рендерим папку
         else:  # если нету входа в аккаунт но мы лезем в файлы то выбрасываем на no_access
             return redirect('/no_access/only users with certain access can reach this file')
     else:  # если просто /q без аргумента
@@ -240,7 +251,7 @@ def quickset(src=None):
                     'isq': True,
                     'fdrc': '/q/' + sf.convert_path(src)
                 }
-                return render_template('qsfolder.html', **args, ip=ip)  # рендерим папку
+                return render_template('qsfolder.html', **args, ip=ip, dark=dark)  # рендерим папку
         else:  # если нету входа в аккаунт но мы лезем в файлы то выбрасываем на no_access
             return redirect('/no_access/only admin has permission to perform this action')
     else:  # если просто /q без аргумента
@@ -252,6 +263,8 @@ def quickset(src=None):
 
 @app.route("/")
 def index():
+    global dark
+    dark = sf.get_theme(current_user)
     args = {
         'quick_src': sf.quick_share(),
         'ip': sf.getIP(),
@@ -266,7 +279,7 @@ def index():
             args['quick_type'] = key
             print(key, '-', sf.quick_share())
 
-    return render_template("index.html", **args)
+    return render_template("index.html", **args, dark=dark)
 
 
 if __name__ == '__main__':

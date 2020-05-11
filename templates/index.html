@@ -39,13 +39,13 @@
   </div>
 </div>
 
-<div class="container" style="margin-top: 15px">
-    {% if avdirs %}
+{% if avdirs %}
+    <div class="container" style="margin-top: 15px">
         <p>Allowed root directories for you:</p>
-    {% endif %}
-{% for dir in avdirs %}
-    <a href="{{ dir[0] }}" class="btn btn-secondary">{{ dir[1] }}</a>
-{% endfor %}
-</div>
+        {% for dir in avdirs %}
+            <a href="{{ dir[0] }}" class="btn btn-secondary">{{ dir[1] }}</a>
+        {% endfor %}
+    </div>
+{% endif %}
 
 {% endblock %}

@@ -13,6 +13,7 @@
 
     <title>{{title}}</title>
 </head>
+{% if dark %}
 <body style=" background-color: #202020 !important;
     background-clip: border-box !important;
     background-origin: padding-box !important;
@@ -21,11 +22,25 @@
     background-size: auto !important;
     background-position: left top !important;
     color: rgb(255, 255, 255)">
+{% else %}
+    <body style=" background-color: #e3f2fd !important;
+    background-clip: border-box !important;
+    background-origin: padding-box !important;
+    background-attachment: scroll !important;
+    background-repeat: repeat !important;
+    background-size: auto !important;
+    background-position: left top !important;
+    color: rgb(0, 0, 0)">
+{% endif %}
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 <header>
-    <nav class="navbar navbar-dark bg-dark">
+    {% if dark %}
+        <nav class="navbar navbar-dark bg-dark">
+    {% else %}
+        <nav class="navbar navbar-light" style="background-color: #45B39D;">
+    {% endif %}
 
         <a class="navbar-brand" href="/">
             <img src="/static/img/icon.png" width="36" height="36" class="d-inline-block align-top" alt="">
@@ -92,6 +107,11 @@
                   <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="/logout" type="button">Logout</a>
                     <a class="dropdown-item" href="/change_password" type="button">Change Password</a>
+                      {% if dark %}
+                        <a class="dropdown-item" href="/theme" type="button">Light side</a>
+                      {% else %}
+                        <a class="dropdown-item" href="/theme" type="button">Dark side</a>
+                      {% endif %}
                   </div>
                 </div>
             {% else %}

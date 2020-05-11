@@ -6,7 +6,7 @@ from .db_session import SqlAlchemyBase
 
 class Settings(SqlAlchemyBase, UserMixin):
     def __repr__(self):
-        return '<Settings>' + ' ' + str(self.id)
+        return '<Settings>' + ' ' + str(self.id) + ' ' + str(self.theme)
 
     __tablename__ = 'settings'
     id_settings = sqlalchemy.Column(sqlalchemy.Integer,
