@@ -1,8 +1,8 @@
 
 # CatClient web filehosting server
-## get your freakin' files in place where you need them! ![img](https://i.imgur.com/83UDzyJ.png)
+## Get your freakin' files in place where you need them! ![img](https://i.imgur.com/83UDzyJ.png)
 
-this project has several features.  here they are.
+This project has several features.  here they are.
 - Remote access to files. For people who are too lazy for USB sticks. 
 
 - Handy qrcodes. For that type of guys who can't memorise a single digit.
