@@ -14,4 +14,6 @@ This project has several features.  here they are.
 - API. Because you might feel like a hackerman.
 
 - Dark Theme. For those who are devs in their hearts.
+## How to start ##
+
 
