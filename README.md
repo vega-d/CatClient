@@ -15,3 +15,7 @@ This project has several features.  here they are.
 
 - Dark Theme. For those who are devs in their hearts.
 
+## Quick Start
+1. If you're on windows, run `req_install.bat` file.
+2. then, double-click on `manager.py` file.
+3. Graphical User Interface should appear, click Run Server button to start the service.
