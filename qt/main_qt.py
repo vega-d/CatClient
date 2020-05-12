@@ -21,6 +21,7 @@ class Main(QWidget):
     def initUI(self):
         self.setWindowTitle('Admin panel')
         # ----------------- List_user -----------------
+
         session = db_session.create_session()
         users = session.query(User).all()
         del users[0]

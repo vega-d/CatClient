@@ -4,8 +4,51 @@ import threading
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QFile, QTextStream
 from PyQt5.QtWidgets import QWidget, QApplication, QPushButton, QMenu, QAction, qApp, QSystemTrayIcon, QStyle
+from PyQt5 import uic
+from qt.qt_func import resource_path
+from data import db_session
+from data.users import User
 
-from qt.main_qt import Main
+
+class Main(QWidget):
+    def __init__(self):
+        super().__init__()
+        # self.setWindowFlags(Qt.Window)
+        if __name__ == '__main__':
+            uic.loadUi(resource_path('qt\\main_qt.ui'), self)
+        else:
+            uic.loadUi(resource_path('qt\\main_qt.ui'), self)
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle('Admin panel')
+        # ----------------- List_user -----------------
+        db_session.global_init("db/catclient.sqlite")
+        session = db_session.create_session()
+        users = session.query(User).all()
+        del users[0]
+        list_name_user = [i.name for i in users]
+        self.list_user.addItems(list_name_user)
+        self.bselect_user.clicked.connect(self.select_user)
+        # ----------------- List_dirs -----------------
+        self.bselect_dir.clicked.connect(self.select_dir)
+
+    def select_user(self):
+        user = self.list_user.currentText()
+        session = db_session.create_session()
+        users = session.query(User).filter(User.name == user).first()
+        if users:
+            print(users.dirs)
+            if users.dirs is None:
+                self.list_dirs.addItems('Not found')
+            else:
+                print(users.dirs)
+                dirs = users.dirs.split(',')
+                self.list_dirs.addItems(dirs)
+
+
+    def select_dir(self):
+        None
 
 
 def server():
