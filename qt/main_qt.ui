@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>350</x>
-     <y>10</y>
+     <y>70</y>
      <width>111</width>
      <height>51</height>
     </rect>
@@ -155,6 +155,19 @@
    </property>
    <property name="text">
     <string>Select</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="start_button">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>10</y>
+     <width>111</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Start server</string>
    </property>
   </widget>
  </widget>
