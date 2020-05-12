@@ -90,13 +90,11 @@ class App(QWidget):
     def onClick(self):
         btn = self.sender().action
         print(btn, 'action released!')
-        # if btn == 'start':
-        #     if not self.server.is_alive():
-        #         self.main_app.show()
-        #
-        #         self.server.start()
-        #         self.start_button.setEnabled(0)
-        #         self.start_button.setText('server running')
+        if btn == 'start':
+            if not self.server.is_alive():
+                self.server.start()
+                self.start_button.setEnabled(0)
+                self.start_button.setText('Server running')
 
     def closeEvent(self, evnt):
         if self.toclose:
