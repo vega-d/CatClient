@@ -297,7 +297,7 @@ def change_password(user_name=None, pass_old=None, pass_new=None):
 
 
 def get_theme(cur_user=None):
-    if not cur_user:
+    if not cur_user or cur_user.is_authenticated == False:
         return True
     id = cur_user.id
     from data import db_session
@@ -312,7 +312,7 @@ def get_theme(cur_user=None):
 
 
 def change_theme(cur_user=None):
-    if not cur_user:
+    if not cur_user or cur_user.is_authenticated == False:
         return False
     from data import db_session
     session = db_session.create_session()
