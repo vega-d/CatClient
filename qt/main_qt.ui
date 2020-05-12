@@ -16,14 +16,14 @@
   <widget class="QPushButton" name="close_server">
    <property name="geometry">
     <rect>
-     <x>350</x>
+     <x>330</x>
      <y>70</y>
-     <width>111</width>
+     <width>131</width>
      <height>51</height>
     </rect>
    </property>
    <property name="text">
-    <string>Close server</string>
+    <string>Close App and Server</string>
    </property>
   </widget>
   <widget class="QComboBox" name="list_user">
@@ -160,9 +160,9 @@
   <widget class="QPushButton" name="start_button">
    <property name="geometry">
     <rect>
-     <x>350</x>
+     <x>330</x>
      <y>10</y>
-     <width>111</width>
+     <width>131</width>
      <height>51</height>
     </rect>
    </property>

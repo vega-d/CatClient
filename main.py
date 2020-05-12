@@ -1,10 +1,9 @@
 import datetime
 import os
 
-from flask import Flask, render_template, redirect, send_from_directory
+from flask import Flask, render_template, redirect, send_from_directory, request
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_restful import Api
-
 import global_var as gv
 import service_func as sf
 from api_resources import Userget, Userlist, Auth, Tokens, Q, ChangePassAPI
@@ -33,6 +32,14 @@ def main():
     )
 
 
+def shutdown_server():
+    print('shut down server ---------------')
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
+
 # ----------------------------- api ------------------------------
 
 
@@ -59,6 +66,12 @@ def favicon():
 
 
 # ------------------------------ admin url ------------------------------
+
+
+def quit():
+    func = request.environ.get('werkzeug.server.shutdown')
+    func()
+    return "Quitting..."
 
 
 @app.route('/add_dirs', methods=['GET', 'POST'])

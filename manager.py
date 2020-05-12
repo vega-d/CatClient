@@ -8,19 +8,25 @@ from PyQt5 import uic
 from qt.qt_func import resource_path
 from data import db_session
 from data.users import User
+import production_run
 
 
 def server():
     print("Starting up the server")
-    try:
-        import production_run
-    except Exception as e:
-        return 'cant find the production release file'
+    # try:
+    #     import production_run
+    # except Exception as e:
+    #     return 'cant find the production release file'
     try:
         production_run.run()
     except Exception as e:
         return 'server crashed. stack:' + str(e)
     print("server shut down")
+
+
+# def close_server():
+#     print('here')
+#     production_run.run.stop()
 
 
 class App(QWidget):
@@ -40,7 +46,10 @@ class App(QWidget):
         self.toclose = False
         self.all_buttons = []
         self.start_button.action = 'start'
+        self.close_server.action = 'close'
+        # self.close_server.setEnabled(0)
         self.all_buttons.append(self.start_button)
+        self.all_buttons.append(self.close_server)
 
         for i in self.all_buttons:
             i.clicked.connect(self.onClick)
@@ -89,12 +98,22 @@ class App(QWidget):
 
     def onClick(self):
         btn = self.sender().action
+
         print(btn, 'action released!')
         if btn == 'start':
             if not self.server.is_alive():
                 self.server.start()
                 self.start_button.setEnabled(0)
                 self.start_button.setText('Server running')
+                # self.close_server.setEnabled(1)
+        if btn == 'close':
+            # self.closeEvent()
+            # - func not work -
+            if self.server.is_alive():
+                self.closeEvent('None')
+                # close_server()
+                # self.start_button.setEnabled(1)
+                # self.close_server.setEnabled(0)
 
     def closeEvent(self, evnt):
         if self.toclose:
