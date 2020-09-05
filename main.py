@@ -4,6 +4,7 @@ import os
 from flask import Flask, render_template, redirect, send_from_directory, request
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_restful import Api
+
 import global_var as gv
 import service_func as sf
 from api_resources import Userget, Userlist, Auth, Tokens, Q, ChangePassAPI
@@ -11,11 +12,9 @@ from data import db_session
 from data.classes import LoginForm, RegisterForm, AddDirsForm, ChangePassForm
 from data.settings import Settings
 from data.users import User
-from flask_ngrok import run_with_ngrok
-
 
 app = Flask(__name__)
-run_with_ngrok(app)
+# run_with_ngrok(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 db_session.global_init("db/catclient.sqlite")
 app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(days=365)
@@ -29,7 +28,7 @@ ip = sf.getIP()
 def main():
     # db_session.global_init("db/blogs.sqlite")
     # app.register_blueprint(api_files.blueprint)
-    run_with_ngrok(app)
+
     app.run(
         # port=gv.port,
         # host=gv.host

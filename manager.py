@@ -2,13 +2,14 @@ import sys
 import threading
 
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import QFile, QTextStream
-from PyQt5.QtWidgets import QWidget, QApplication, QPushButton, QMenu, QAction, qApp, QSystemTrayIcon, QStyle
 from PyQt5 import uic
-from qt.qt_func import resource_path
+from PyQt5.QtCore import QFile, QTextStream
+from PyQt5.QtWidgets import QWidget, QApplication, QMenu, QAction, qApp, QSystemTrayIcon, QStyle
+
+import production_run
 from data import db_session
 from data.users import User
-import production_run
+from qt.qt_func import resource_path
 
 
 def server():
@@ -27,6 +28,10 @@ def server():
 # def close_server():
 #     print('here')
 #     production_run.run.stop()
+
+
+def select_dir():
+    var = None
 
 
 class App(QWidget):
@@ -76,7 +81,7 @@ class App(QWidget):
         self.list_user.addItems(list_name_user)
         self.bselect_user.clicked.connect(self.select_user)
         # ----------------- List_dirs -----------------
-        self.bselect_dir.clicked.connect(self.select_dir)
+        self.bselect_dir.clicked.connect(select_dir)
 
     def select_user(self):
         user = self.list_user.currentText()
@@ -93,9 +98,6 @@ class App(QWidget):
                 dirs = users.dirs.split(',')
                 self.list_dirs.addItems(dirs)
 
-    def select_dir(self):
-        None
-
     def onClick(self):
         btn = self.sender().action
 
@@ -111,9 +113,8 @@ class App(QWidget):
             # - func not work -
             if self.server.is_alive():
                 self.closeEvent('None')
-                # close_server()
-                # self.start_button.setEnabled(1)
-                # self.close_server.setEnabled(0)
+            else:
+                exit(0)
 
     def closeEvent(self, evnt):
         if self.toclose:
