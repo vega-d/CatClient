@@ -18,10 +18,10 @@ def quick_share(ret=None):
     return gv.quick_src if gv.quick_src else gv.no_image
 
 
-def debugOutput(text):
+def debugOutput(*args, **kwargs):
     if gv.debug:
         from datetime import datetime
-        print(datetime.now(), ' - ', text)
+        print(datetime.now(), ' - ', *args, **kwargs)
 
 
 def getIP():
@@ -46,6 +46,8 @@ def getIP():
 def available_user_addresses(user_name, address_dir=None):
     from data import db_session
     from data.users import User
+    if user_name.lower() is "admin":
+        return True
 
     if address_dir:
         '''
@@ -55,7 +57,7 @@ def available_user_addresses(user_name, address_dir=None):
         user = session.query(User).filter(User.name == user_name).first()
         if user.dirs:
             dirs_user = [i.replace(r'\\', '/').replace('\\', '/') for i in user.dirs.split(',')]
-
+            debugOutput("tried to access:", address_dir, "; has access to:", dirs_user)
             for dir in dirs_user:
 
                 if dir in address_dir:
@@ -76,7 +78,7 @@ def available_user_addresses(user_name, address_dir=None):
 
 def does_this_directory_already_exist(user_name, address_dir):
     """
-        Does this directory already exist? (Yes, it is the same as the previous function)
+
     """
     from data import db_session
     from data.users import User
@@ -104,6 +106,20 @@ def checking_dir_when_adding(address_dir):
     elif platform == "darwin":
         debugOutput(r"""you're running MacOS, i'm not gonna support that shit.""")  # sorry
     return False
+
+def getDefaultHome():
+    """
+
+    """
+    from sys import platform
+    if platform in ("linux", "linux2"):
+        return "~;;"
+    elif platform == "win32":
+        return "C:;;"
+    elif platform == "darwin":
+        debugOutput(r"""you're running MacOS, i'm not gonna support that shit.""")  # sorry
+    assert ValueError
+    return None
 
 
 def generateQR():

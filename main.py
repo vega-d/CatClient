@@ -1,5 +1,6 @@
 import datetime
 import os
+import getpass
 
 from flask import Flask, render_template, redirect, send_from_directory, request
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -104,7 +105,6 @@ def add_dirs():
                                message="Пользователя не существует", title='Add Folder',
                                form=form, ip=ip, dark=dark)
     return render_template('add_dirs.html', title='Add Folder', form=form, ip=ip, dark=dark)
-
 
 # ------------------------------ login url -------------------------------
 
@@ -223,11 +223,16 @@ def quick(src=None):
     if src:  # если у нас надо получить какой-то конкретный файл или папку
 
         src = src.replace(gv.url_path_separation, '/')  # конвертируем C:;;dir;;dir2 в нормальный формат с /
+        from sys import platform
+        if platform in ("linux", "linux2"):
+            src = src.replace('~', '/home/' + getpass.getuser())
+        src = src.replace('', '/')
         src_split = os.path.split(src)
         # отделяем путь от конечный пункта, то есть имя папки или файла который надо открыть
         if current_user.is_authenticated:
 
             if not sf.available_user_addresses(current_user.name, address_dir=src):
+
                 return redirect('/no_access/You have no access to this folder or file.')
 
             if src_split[-1] and os.path.isfile(src):  # если мы открываем файл дать его в чистом виде
@@ -241,7 +246,7 @@ def quick(src=None):
                     'isq': True,
                     'fdrc': '/qs/' + sf.convert_path(src)
                 }
-                return render_template('folder.html', **args, ip=ip, dark=dark, title='Explorer')  # рендерим папку
+                return render_template('folder.html', **args, ip=ip, dark=dark, title='Explorer', home_folder=gv.home_folder)  # рендерим папку
         else:  # если нету входа в аккаунт но мы лезем в файлы то выбрасываем на no_access
             return redirect('/no_access/only users with certain access can reach this file')
     else:  # если просто /q без аргумента
@@ -295,7 +300,7 @@ def index():
             args['quick_type'] = key
             print(key, '-', sf.quick_share())
 
-    return render_template("index.html", **args, dark=dark, title='CatClient')
+    return render_template("index.html", **args, dark=dark, title='CatClient', home_folder=gv.home_folder)
 
 
 if __name__ == '__main__':
