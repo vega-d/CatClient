@@ -3,7 +3,7 @@
 ## Get your freakin' files in place where you need them! ![img](https://i.imgur.com/83UDzyJ.png)
 
 This project has several features.  here they are.
-- Remote access to files. For people who are too lazy for USB sticks. 
+- Remote access to files. For people who are too lazy for USB sticks.
 
 - Handy qrcodes. For that type of guys who can't memorise a single digit.
 
@@ -14,7 +14,6 @@ This project has several features.  here they are.
 - API. Because you might feel like a hackerman.
 
 - Dark Theme. For those who are devs in their hearts.
-## How to start ##
 
 
 ## Quick Start
