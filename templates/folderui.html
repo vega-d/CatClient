@@ -1,11 +1,16 @@
+{% block content %}
 <h1>Folder {{ path }}</h1>
 
 {% for item in list_visible %}
 <li><a href="{{ item[0] }}">{{ item[1] }}</a></li>
 {% endfor %}
 
-<h2>Hidden files:</h2>
 
+{% if list_invisible|count > 0 %}
+<h2>Hidden files:</h2>
 {% for item in list_invisible %}
 <li><a href="{{ item[0] }}">{{ item[1] }}</a></li>
 {% endfor %}
+{% endif %}
+
+{% endblock %}
