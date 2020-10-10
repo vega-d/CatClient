@@ -5,7 +5,6 @@ from sqlalchemy import pool
 
 from alembic import context
 
-
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -24,7 +23,7 @@ import sys
 sys.path.insert(0, 'C:\\Users\\sveul\\PycharmProjects\\CatClient')
 print(sys.path)
 from data.db_session import SqlAlchemyBase
-import data.__all_models
+
 target_metadata = SqlAlchemyBase.metadata
 
 # other values from the config, defined by the needs of env.py,

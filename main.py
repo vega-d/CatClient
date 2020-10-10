@@ -1,9 +1,11 @@
 import datetime
 import os
+import getpass
 
 from flask import Flask, render_template, redirect, send_from_directory, request
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_restful import Api
+
 import global_var as gv
 import service_func as sf
 from api_resources import Userget, Userlist, Auth, Tokens, Q, ChangePassAPI
@@ -11,11 +13,9 @@ from data import db_session
 from data.classes import LoginForm, RegisterForm, AddDirsForm, ChangePassForm
 from data.settings import Settings
 from data.users import User
-from flask_ngrok import run_with_ngrok
-
 
 app = Flask(__name__)
-run_with_ngrok(app)
+# run_with_ngrok(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 db_session.global_init("db/catclient.sqlite")
 app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(days=365)
@@ -29,7 +29,7 @@ ip = sf.getIP()
 def main():
     # db_session.global_init("db/blogs.sqlite")
     # app.register_blueprint(api_files.blueprint)
-    run_with_ngrok(app)
+
     app.run(
         # port=gv.port,
         # host=gv.host
@@ -105,7 +105,6 @@ def add_dirs():
                                message="Пользователя не существует", title='Add Folder',
                                form=form, ip=ip, dark=dark)
     return render_template('add_dirs.html', title='Add Folder', form=form, ip=ip, dark=dark)
-
 
 # ------------------------------ login url -------------------------------
 
@@ -224,25 +223,33 @@ def quick(src=None):
     if src:  # если у нас надо получить какой-то конкретный файл или папку
 
         src = src.replace(gv.url_path_separation, '/')  # конвертируем C:;;dir;;dir2 в нормальный формат с /
+        from sys import platform
+        if platform in ("linux", "linux2"):
+            src = src.replace('~', '/home/' + getpass.getuser())
+        src = src.replace(';;', '/')
+        sf.debugOutput("src requested is", src)
         src_split = os.path.split(src)
         # отделяем путь от конечный пункта, то есть имя папки или файла который надо открыть
         if current_user.is_authenticated:
 
             if not sf.available_user_addresses(current_user.name, address_dir=src):
+
                 return redirect('/no_access/You have no access to this folder or file.')
 
             if src_split[-1] and os.path.isfile(src):  # если мы открываем файл дать его в чистом виде
                 # print(*src_split, '---')
                 return send_from_directory(*src_split)
             else:  # если зашло сюда значит мы открываем папку
+                list_visible, list_invisible = sf.generate_dir(src)
                 args = {
                     'path': src,  # путь папки
-                    'list': sf.generate_dir(src),  # ее содержимое в виде листа из кортежей.
+                    'list_visible': list_visible,  # ее содержимое в виде листа из кортежей.
+                    'list_invisible': list_invisible,  # ее содержимое в виде листа из кортежей.
                     # пример кортежа ('/q/C:;;Users;;', 'Users')
                     'isq': True,
                     'fdrc': '/qs/' + sf.convert_path(src)
                 }
-                return render_template('folder.html', **args, ip=ip, dark=dark, title='Explorer')  # рендерим папку
+                return render_template('folder.html', **args, ip=ip, dark=dark, title='Explorer', home_folder=gv.home_folder)  # рендерим папку
         else:  # если нету входа в аккаунт но мы лезем в файлы то выбрасываем на no_access
             return redirect('/no_access/only users with certain access can reach this file')
     else:  # если просто /q без аргумента
@@ -262,9 +269,11 @@ def quickset(src=None):
                 sf.setqs(src)
                 return redirect('/q/' + sf.convert_path(src_split[0]))
             else:  # если зашло сюда значит мы открываем папку
+                list_visible, list_invisible = sf.generate_dir(src)
                 args = {
                     'path': src,  # путь папки
-                    'list': sf.qsgenerate_dir(src),  # ее содержимое в виде листа из кортежей.
+                    'list_visible': list_visible,  # ее содержимое в виде листа из кортежей.
+                    'list_invisible': list_invisible,  # ее содержимое в виде листа из кортежей.
                     'isq': True,
                     'fdrc': '/q/' + sf.convert_path(src)
                 }
@@ -296,7 +305,7 @@ def index():
             args['quick_type'] = key
             print(key, '-', sf.quick_share())
 
-    return render_template("index.html", **args, dark=dark, title='CatClient')
+    return render_template("index.html", **args, dark=dark, title='CatClient', home_folder=gv.home_folder)
 
 
 if __name__ == '__main__':

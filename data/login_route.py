@@ -1,17 +1,16 @@
 # ЭТОТ МОДУЛЬ НЕ ИСПОЛЬЗУЕТСЯ, КАК ЭТО ЗАСТАВИТЬ РАБОТАТЬ ДУМАЙТЕ САМИ
 
 
-from flask import Flask, render_template, redirect, request, make_response, session, abort
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField,  BooleanField, SubmitField, TextAreaField,\
-    SubmitField, ValidationError, TextField
-from wtforms.validators import DataRequired
-from wtforms.fields.html5 import EmailField
-from data import db_session
-from data.users import User
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 import datetime
 
+from flask import Flask, render_template, redirect
+from flask_login import LoginManager, login_user, login_required, logout_user
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms.validators import DataRequired
+
+from data import db_session
+from data.users import User
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'

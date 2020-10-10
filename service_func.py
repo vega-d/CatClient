@@ -18,10 +18,10 @@ def quick_share(ret=None):
     return gv.quick_src if gv.quick_src else gv.no_image
 
 
-def debugOutput(text):
+def debugOutput(*args, **kwargs):
     if gv.debug:
         from datetime import datetime
-        print(datetime.now(), ' - ', text)
+        print(datetime.now(), ' - ', *args, **kwargs)
 
 
 def getIP():
@@ -46,6 +46,8 @@ def getIP():
 def available_user_addresses(user_name, address_dir=None):
     from data import db_session
     from data.users import User
+    if user_name.lower() is "admin":
+        return True
 
     if address_dir:
         '''
@@ -55,7 +57,7 @@ def available_user_addresses(user_name, address_dir=None):
         user = session.query(User).filter(User.name == user_name).first()
         if user.dirs:
             dirs_user = [i.replace(r'\\', '/').replace('\\', '/') for i in user.dirs.split(',')]
-
+            debugOutput("tried to access:", address_dir, "; has access to:", dirs_user)
             for dir in dirs_user:
 
                 if dir in address_dir:
@@ -76,7 +78,7 @@ def available_user_addresses(user_name, address_dir=None):
 
 def does_this_directory_already_exist(user_name, address_dir):
     """
-        Does this directory already exist? (Yes, it is the same as the previous function)
+
     """
     from data import db_session
     from data.users import User
@@ -105,6 +107,20 @@ def checking_dir_when_adding(address_dir):
         debugOutput(r"""you're running MacOS, i'm not gonna support that shit.""")  # sorry
     return False
 
+def getDefaultHome():
+    """
+
+    """
+    from sys import platform
+    if platform in ("linux", "linux2"):
+        return "~;;"
+    elif platform == "win32":
+        return "C:;;"
+    elif platform == "darwin":
+        debugOutput(r"""you're running MacOS, i'm not gonna support that shit.""")  # sorry
+    assert ValueError
+    return None
+
 
 def generateQR():
     import qrcode
@@ -130,22 +146,34 @@ def generate_dir(path):
     except PermissionError as e:
         return [('/q/' + convert_path(os.path.split(path)[0]),
                  'Sorry, you have no permissions. Click here to go back')]
-    ret = []
+    ret, hidden_files = [], []
 
     split_path = os.path.split(path)
-    if split_path[-1]:
+
+    upperfolderAllowed = True
+    try:
+        tmp = os.listdir('/'.join(split_path[:-1]))
+    except PermissionError as e:
+        upperfolderAllowed = False
+
+    if split_path[-1] and upperfolderAllowed:
         ret.append((
             '/q/' + convert_path('/'.join(split_path[:-1])),
             '...'
         ))
 
     for i in list_dir:
-        template = (
-            '/q/' + convert_path(os.path.join(path, i)),
-            i
-        )
-        ret.append(template)
-    return ret
+        if i[0] == '.':
+            hidden_files.append((
+                '/q/' + convert_path(os.path.join(path, i)),
+                i
+            ))
+        else:
+            ret.append((
+                '/q/' + convert_path(os.path.join(path, i)),
+                i
+            ))
+    return ret, hidden_files
 
 
 def qsgenerate_dir(path):
@@ -299,6 +327,7 @@ def change_password(user_name=None, pass_old=None, pass_new=None):
 def get_theme(cur_user=None):
     if not cur_user or cur_user.is_authenticated == False:
         return True
+
     id = cur_user.id
     from data import db_session
     session = db_session.create_session()
@@ -312,7 +341,7 @@ def get_theme(cur_user=None):
 
 
 def change_theme(cur_user=None):
-    if not cur_user or cur_user.is_authenticated == False:
+    if not cur_user:
         return False
     from data import db_session
     session = db_session.create_session()

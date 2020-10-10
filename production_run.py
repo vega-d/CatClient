@@ -1,5 +1,4 @@
 from gevent.pywsgi import WSGIServer
-import wsgiserver
 
 from main import *
 

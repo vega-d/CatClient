@@ -38,12 +38,13 @@ Requirements:
 """
 import logging
 import sys
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtCore import QFile, QTextStream
-# make the example runnable without the need to install
 
 import example
-import breeze_resources
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtCore import QFile, QTextStream
+
+
+# make the example runnable without the need to install
 
 def main():
     """

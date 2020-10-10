@@ -2,10 +2,6 @@
 
 {% block content %}
 
-<h1>Folder {{ path }}</h1>
-
-{% for item in list %}
-<li><a href="{{ item[0] }}">{{ item[1] }}</a></li>
-{% endfor %}
+{% includes "folderui.html" %}
 
 {% endblock %}
