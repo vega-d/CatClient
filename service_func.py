@@ -145,7 +145,11 @@ def generate_dir(path):
         list_dir = os.listdir(path)
     except PermissionError as e:
         return [('/q/' + convert_path(os.path.split(path)[0]),
-                 'Sorry, you have no permissions. Click here to go back')]
+                 'Sorry, you have no permissions. Click here to go back')],[]
+    except FileNotFoundError as e:
+        return [('/q/' + convert_path(os.path.split(path)[0]),
+                 'Sorry, this file does not exist. Click here to go back')],[]
+
     ret, hidden_files = [], []
 
     split_path = os.path.split(path)
