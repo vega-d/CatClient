@@ -1,13 +1,28 @@
-from requests import get
+a = [float(i) for i in
+     ("4 3 3 3 4 3 3 5 3 4 3 4 3 4 3 3 5 4 3 3 "+
+     "4 4 4 4 4 3 4 4 4 5 3 3 4 3 3 4 3 5 3 4 "+
+     "3 4 3 3 4 4 4 4 5 4")
+     .split(' ')]
+not_repeated = []
 
-host = 'http://127.0.0.1/api/'
-token_lunar = '35QE6WdVcx3jfFHcUi5euw'
-token_admin = '-UbIxK-rP5N4r0cYhb12HA'
+print('var vib:', len(a))
+for i in a:
+    if i not in not_repeated:
+        not_repeated.append(i)
+print(not_repeated)
+overall = 0.0
+for i in not_repeated:
+    print(i, 'is in quantity of', a.count(i))
+    overall+=float(a.count(i))
+print('\n', overall, '\n')
+for i in not_repeated:
+    print(i, 'is in quantity of', (float(a.count(i))/overall)*100, '%')
 
-pss = 'pbkdf2:sha256:150000$PZDpxSd1$c14d97a8717d8bd02acc1c3926301fc5fac8768d76eceaa838a1c94b61a0a577'
 
-url = host + token_admin + '/users/' + 'admin'
 
-print(url)
-print(get(url).json())
 
+# "5 9 4 8 6 8 6 8 5 9 4 4 5 4 9 8 6 6 8 9 4"
+
+#"4 3 2 3 4 3 3 5 3 4 3 4 3 4 3 3 5 4 3 3 "+
+#"4 2 4 4 4 3 4 4 4 5 3 3 4 3 3 4 3 5 2 4 "+
+#"3 4 3 3 4 4 4 4 5 4"

@@ -226,7 +226,8 @@ def quick(src=None):
         from sys import platform
         if platform in ("linux", "linux2"):
             src = src.replace('~', '/home/' + getpass.getuser())
-        src = src.replace('', '/')
+        src = src.replace(';;', '/')
+        sf.debugOutput("src requested is", src)
         src_split = os.path.split(src)
         # отделяем путь от конечный пункта, то есть имя папки или файла который надо открыть
         if current_user.is_authenticated:
@@ -239,9 +240,11 @@ def quick(src=None):
                 # print(*src_split, '---')
                 return send_from_directory(*src_split)
             else:  # если зашло сюда значит мы открываем папку
+                list_visible, list_invisible = sf.generate_dir(src)
                 args = {
                     'path': src,  # путь папки
-                    'list': sf.generate_dir(src),  # ее содержимое в виде листа из кортежей.
+                    'list_visible': list_visible,  # ее содержимое в виде листа из кортежей.
+                    'list_invisible': list_invisible,  # ее содержимое в виде листа из кортежей.
                     # пример кортежа ('/q/C:;;Users;;', 'Users')
                     'isq': True,
                     'fdrc': '/qs/' + sf.convert_path(src)
@@ -266,9 +269,11 @@ def quickset(src=None):
                 sf.setqs(src)
                 return redirect('/q/' + sf.convert_path(src_split[0]))
             else:  # если зашло сюда значит мы открываем папку
+                list_visible, list_invisible = sf.generate_dir(src)
                 args = {
                     'path': src,  # путь папки
-                    'list': sf.qsgenerate_dir(src),  # ее содержимое в виде листа из кортежей.
+                    'list_visible': list_visible,  # ее содержимое в виде листа из кортежей.
+                    'list_invisible': list_invisible,  # ее содержимое в виде листа из кортежей.
                     'isq': True,
                     'fdrc': '/q/' + sf.convert_path(src)
                 }

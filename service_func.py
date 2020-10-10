@@ -146,22 +146,34 @@ def generate_dir(path):
     except PermissionError as e:
         return [('/q/' + convert_path(os.path.split(path)[0]),
                  'Sorry, you have no permissions. Click here to go back')]
-    ret = []
+    ret, hidden_files = [], []
 
     split_path = os.path.split(path)
-    if split_path[-1]:
+
+    upperfolderAllowed = True
+    try:
+        tmp = os.listdir('/'.join(split_path[:-1]))
+    except PermissionError as e:
+        upperfolderAllowed = False
+
+    if split_path[-1] and upperfolderAllowed:
         ret.append((
             '/q/' + convert_path('/'.join(split_path[:-1])),
             '...'
         ))
 
     for i in list_dir:
-        template = (
-            '/q/' + convert_path(os.path.join(path, i)),
-            i
-        )
-        ret.append(template)
-    return ret
+        if i[0] == '.':
+            hidden_files.append((
+                '/q/' + convert_path(os.path.join(path, i)),
+                i
+            ))
+        else:
+            ret.append((
+                '/q/' + convert_path(os.path.join(path, i)),
+                i
+            ))
+    return ret, hidden_files
 
 
 def qsgenerate_dir(path):
