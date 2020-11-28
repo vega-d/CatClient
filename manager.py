@@ -38,9 +38,9 @@ class App(QWidget):
     def __init__(self):
         super().__init__()
         if __name__ == '__main__':
-            uic.loadUi(resource_path('qt\\main_qt.ui'), self)
+            uic.loadUi(resource_path('qt/main_qt.ui'), self)
         else:
-            uic.loadUi(resource_path('qt\\main_qt.ui'), self)
+            uic.loadUi(resource_path('qt/main_qt.ui'), self)
 
         self.move(180, 100)
         self.setFixedSize(480, 480)
@@ -75,9 +75,10 @@ class App(QWidget):
         # ----------------- List_user -----------------
         db_session.global_init("db/catclient.sqlite")
         session = db_session.create_session()
-        users = session.query(User).all()
-        del users[0]
-        list_name_user = [i.name for i in users]
+        # users = session.query(User).all()
+        #del users[0]
+        # list_name_user = [i.name for i in users]
+        list_name_user = ['', 'user 1', 'user 2']
         self.list_user.addItems(list_name_user)
         self.bselect_user.clicked.connect(self.select_user)
         # ----------------- List_dirs -----------------

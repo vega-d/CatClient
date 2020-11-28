@@ -31,7 +31,7 @@ def main():
     # app.register_blueprint(api_files.blueprint)
 
     app.run(
-        # port=gv.port,
+        port=gv.port,
         # host=gv.host
     )
 
@@ -269,7 +269,7 @@ def quickset(src=None):
                 sf.setqs(src)
                 return redirect('/q/' + sf.convert_path(src_split[0]))
             else:  # если зашло сюда значит мы открываем папку
-                list_visible, list_invisible = sf.generate_dir(src)
+                list_visible, list_invisible = sf.generate_dir(src, qs=True)
                 args = {
                     'path': src,  # путь папки
                     'list_visible': list_visible,  # ее содержимое в виде листа из кортежей.

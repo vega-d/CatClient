@@ -11,44 +11,42 @@
 {% else %}
 {% endif %}
 
-<div class="container" style="margin-top: 15px">
-  <div class="row">
+<div class="main">
+  <div class="main-inner grid">
 
-      <div class="col-sm">
-        <div>
-            {% if quick_type == "pic" %}
-            <img src="{{ quick_src }}"  class="rounded" alt="No quick share uploaded" height="200"/>
-            {% elif quick_type == "vid" %}
-            <video controls>
-                <source src="{{ quick_src }}" type="video">
-                Your browser does not support the video tag.
-            </video>
-            {% elif quick_type == "aud" %}
-            <audio controls>
-                <source src="{{ quick_src }}" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
-            {% else %}
-                <p>Apparently, we can't preview the file :(</p>
-            {% endif %}
-            <br>
-
-            </br>
-            <a class="btn btn-primary" href="{{ quick_src }}">download as is</a>
-        </div>
+      <div class="main-info">
+          <div>
+              {% if quick_type == "pic" %}
+              <img src="{{ quick_src }}"  class="rounded" alt="No quick share uploaded" height="200"/>
+              {% elif quick_type == "vid" %}
+              <video controls>
+                  <source src="{{ quick_src }}" type="video">
+                  Your browser does not support the video tag.
+              </video>
+              {% elif quick_type == "aud" %}
+              <audio controls>
+                  <source src="{{ quick_src }}" type="audio/mpeg">
+                  Your browser does not support the audio element.
+              </audio>
+              {% else %}
+                  <p>Apparently, we can't preview the file :(</p>
+              {% endif %}
+              <br>
+              </br>
+              <a href="{{ quick_src }}"><button class="button download_button">download as is</button></a>
+          </div>
+          {% if avdirs %}
+          <div class="container" style="margin-top: 15px">
+              <p>Allowed entry directories for you:</p>
+              {% for dir in avdirs %}
+              <a href="{{ dir[0] }}"><button class="button button-secondary">{{ dir[1] }}</button></a>
+              {% endfor %}
+          </div>
+          {% endif %}
       </div>
 
 
   </div>
 </div>
-
-{% if avdirs %}
-    <div class="container" style="margin-top: 15px">
-        <p>Allowed entry directories for you:</p>
-        {% for dir in avdirs %}
-            <a href="{{ dir[0] }}" class="btn btn-secondary">{{ dir[1] }}</a>
-        {% endfor %}
-    </div>
-{% endif %}
 
 {% endblock %}
