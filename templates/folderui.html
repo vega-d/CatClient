@@ -2,18 +2,16 @@
 <div class="grid">
     <h1 class="header1">Folder {{ path }}</h1>
 
-    {% include "fileupload.html" %}
-
-    {% for item in list_visible %}
-    <li class="folder-item"><a href="{{ item[0] }}">{{ item[1] }}</a></li>
-    {% endfor %}
+{% for item in list_visible %}
+<li><a href="{{ item[0] }}">{{ item[1] }}</a></li>
+{% endfor %}
 
 
-    {% if list_invisible|count > 0 %}
-    <h2 class="header2">Hidden files:</h2>
-    {% for item in list_invisible %}
-    <li class="folder-item"><a href="{{ item[0] }}">{{ item[1] }}</a></li>
-    {% endfor %}
-    {% endif %}
-</div>
+{% if list_invisible|count > 0 %}
+<h2>Hidden files:</h2>
+{% for item in list_invisible %}
+<li><a href="{{ item[0] }}">{{ item[1] }}</a></li>
+{% endfor %}
+{% endif %}
+
 {% endblock %}
