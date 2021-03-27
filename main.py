@@ -229,6 +229,8 @@ def upload(src=None):
         src_split = os.path.split(src)
         # отделяем путь от конечный пункта, то есть имя папки или файла который надо открыть
         if current_user.is_authenticated:
+            if not sf.available_user_addresses(current_user.name, address_dir=src):
+                return redirect('/no_access/You have no access to this folder or file.')
             # если нам отправили файл - сохранить.
             if 'uploaded_file' in request.files:
                 uploaded_file = request.files['uploaded_file']
