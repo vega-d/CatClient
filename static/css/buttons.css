@@ -1,5 +1,6 @@
 .button{
-    color: white;
+    background: black;
+    text-color: black;
     border-radius: 8px;
     border: 0px;
     padding: 10px 20px;
@@ -29,8 +30,16 @@
     background: linear-gradient(to bottom right, rgba(255, 0, 0, .7), rgba(0, 0, 255, 1));
 }
 
+.button-secondary{
+    background: linear-gradient(to bottom right, rgba(255, 0, 0, .7), rgba(0, 255, 0, 1));
+}
+
 .download_button{
     background: linear-gradient(to bottom right, rgba(34, 139, 34, .7), rgba(100, 128, 0, 1));
+}
+
+.button-success{
+    background: #029e7f;
 }
 
 .navigation__link{
@@ -55,4 +64,53 @@
 }
 .header1 {
     margin: 30px;
+}
+
+/* Style The Dropdown Button */
+.dropbtn {
+    color: black;
+    text-color: black;
+    border-radius: 8px;
+    border: 0px;
+    padding: 10px 20px;
+    margin: 20px 5px;
+    font-size: 150%;
+    cursor: pointer;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
 }

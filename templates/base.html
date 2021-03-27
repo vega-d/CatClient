@@ -9,14 +9,7 @@
     <title>{{title}}</title>
 </head>
 {% if dark %}
-<body style=" background-color: #6E6C78 !important;
-    background-clip: border-box !important;
-    background-origin: padding-box !important;
-    background-attachment: scroll !important;
-    background-repeat: repeat !important;
-    background-size: auto !important;
-    background-position: left top !important;
-    color: rgb(255, 255, 255)">
+<body>
 {% else %}
     <body style=" background-color: #e3f2fd !important;
     background-clip: border-box !important;
@@ -27,7 +20,7 @@
     background-position: left top !important;
     color: rgb(0, 0, 0)">
 {% endif %}
-<header>
+<header style="top: 0px;">
     {% if dark %}
         <nav class="header header-dark bg-dark">
     {% else %}
@@ -35,43 +28,12 @@
     {% endif %}
 
         <div class="header-inner grid">
-            <a class="header-brand" href="/">
-                <img src="/static/img/icon.png" width="36" height="36" class="d-inline-block align-top" alt="">
+            <a class="logo" href="/">
+                <img src="/static/img/icon.png" width="33px" height="33px" class="d-inline-block align-top" alt="">
                 CatClient
 
             </a>
             <div class="navigation">
-                {% if not is_index %}
-                    <button type="button" class="button button-primary" data-toggle="modal" data-target="#exampleModalCenter">
-                      QR
-                    </button>
-                    <!--<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style=";-->
-                            <!--color: rgb(0, 0, 0)-->
-                        <!--" >-->
-                      <!--<div class="modal-dialog modal-dialog-centered modal-sm" role="document" >-->
-                        <!--<div class="modal-content">-->
-                          <!--<div class="modal-header">-->
-                            <!--<h5 class="modal-title" id="exampleModalLongTitle"> QR code</h5>-->
-                            <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-                              <!--<span aria-hidden="true">&times;</span>-->
-                            <!--</button>-->
-                          <!--</div>-->
-                          <!--<div class="modal-body modal-center" style="text-align:  center">-->
-                            <!--<img src="http://{{ ip }}/static/img/qr.png" class="rounded" alt="..." height="250" width="250">-->
-                                <!--<figcaption> QR code to go to the site </figcaption>-->
-                                <!--<figcaption>-->
-                                    <!--<footer class="blockquote-footer">-->
-                                        <!--Address: {{ ip }}-->
-                                    <!--</footer>-->
-                                <!--</figcaption>-->
-                          <!--</div>-->
-                          <!--<div class="modal-footer">-->
-                            <!--<button type="button" class="button button-primary" data-dismiss="modal" >Ok</button>-->
-                          <!--</div>-->
-                        <!--</div>-->
-                      <!--</div>-->
-                    <!--</div>-->
-                {% endif %}
                 {% if current_user.is_authenticated %}
                     {% if current_user.type_user == "admin" %}
                         {% if isq %}
@@ -82,10 +44,10 @@
                             </a>
                         {% endif %}
                     <div class="dropdown">
-                        <button class="dropbtn">admin settings</button>
+                        <button class="button button-primary">admin settings</button>
                         <div class="dropdown-content">
                           <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="/register" type="button">Register user</a>
+                            <a class="dropdown-item" href="/register" type="button"> Register user </a>
                             <a class="dropdown-item" href="/add_dirs" type="button"> Add folder to user </a>
                           </div>
                         </div>
@@ -93,7 +55,7 @@
                     {% endif %}
 
                     <div class="dropdown">
-                        <button class="dropbtn">Dropdown</button>
+                        <button class="button button-primary">Options</button>
                         <div class="dropdown-content">
                             <a class="dropdown-item" href="/logout" type="button">Logout</a>
                             <a class="dropdown-item" href="/change_password" type="button">Change Password</a>
@@ -117,7 +79,8 @@
 </header>
 <!-- Begin page content -->
 <main role="main" class="container">
-    {% block content %}{% endblock %}
+    {% block content %}
+    {% endblock %}
 </main>
 </body>
 </html>

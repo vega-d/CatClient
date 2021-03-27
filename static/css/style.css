@@ -25,7 +25,13 @@ div.horizontalgap {
   width: 0px;
 }
 
+.container {
+    width: 100%;
+    height: auto;
+}
+
 img {
     max-width: 90%;
     max-height: 90%;
 }
+

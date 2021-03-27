@@ -1,6 +1,6 @@
 import datetime
-import os
 import getpass
+import os
 
 from flask import Flask, render_template, redirect, send_from_directory, request
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -249,6 +249,13 @@ def quick(src=None):
                     'isq': True,
                     'fdrc': '/qs/' + sf.convert_path(src)
                 }
+
+                # если нам отправили файл - сохранить.
+                if 'uploaded_file' in request.files:
+                    uploaded_file = request.files['uploaded_file']
+                    if uploaded_file.filename != '':
+                        uploaded_file.save(os.path.join(src, uploaded_file.filename))
+
                 return render_template('folder.html', **args, ip=ip, dark=dark, title='Explorer', home_folder=gv.home_folder)  # рендерим папку
         else:  # если нету входа в аккаунт но мы лезем в файлы то выбрасываем на no_access
             return redirect('/no_access/only users with certain access can reach this file')
