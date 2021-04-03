@@ -1,5 +1,6 @@
 {% block content %}
-<h1>Folder {{ path }}</h1>
+<div class="grid">
+    <h1 class="header1">Folder {{ path }}</h1>
 
 {% for item in list_visible %}
 <li><a href="{{ item[0] }}">{{ item[1] }}</a></li>

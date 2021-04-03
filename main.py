@@ -1,6 +1,6 @@
 import datetime
-import os
 import getpass
+import os
 
 from flask import Flask, render_template, redirect, send_from_directory, request
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -31,7 +31,7 @@ def main():
     # app.register_blueprint(api_files.blueprint)
 
     app.run(
-        # port=gv.port,
+        port=gv.port,
         # host=gv.host
     )
 
@@ -55,10 +55,10 @@ api.add_resource(Tokens, '/api/token/<login>/<hash>')
 api.add_resource(Q, '/api/<token>/q/<src>')
 api.add_resource(ChangePassAPI, '/api/changepass/<user>/<old_pass>/<new_pass>')
 
-
 # ----------------------------- other global var ------------------------------
 
 dark = sf.get_theme(current_user)
+
 
 # ----------------------------- service url ------------------------------
 
@@ -105,6 +105,7 @@ def add_dirs():
                                message="Пользователя не существует", title='Add Folder',
                                form=form, ip=ip, dark=dark)
     return render_template('add_dirs.html', title='Add Folder', form=form, ip=ip, dark=dark)
+
 
 # ------------------------------ login url -------------------------------
 
@@ -185,7 +186,8 @@ def change_pass():
             return render_template('change_pass.html', title='Register',
                                    form=form,
                                    message="This user does not exists.", ip=ip, dark=dark)
-        hashed_old, hashed_new = [sf.hash_password(str(i)) for i in [str(form.password.data), str(form.password_new.data)]]
+        hashed_old, hashed_new = [sf.hash_password(str(i)) for i in
+                                  [str(form.password.data), str(form.password_new.data)]]
         res = sf.change_password(form.name.data, form.password.data, form.password_new.data)
         # print(res)
         if res:
@@ -214,6 +216,30 @@ def no_access(reason="None specified"):
     return render_template('no_access.html', reason=reason, ip=ip, dark=dark, title='No access')
 
 
+@app.route('/upload/<src>', methods=['GET', 'POST'])
+def upload(src=None):
+    print('uploading to:', src)
+    if src:  # если у нас надо получить какой-то конкретный файл или папку
+        src = src.replace(gv.url_path_separation, '/')  # конвертируем C:;;dir;;dir2 в нормальный формат с /
+        from sys import platform
+        if platform in ("linux", "linux2"):
+            src = src.replace('~', '/home/' + getpass.getuser())
+        src = src.replace(';;', '/')
+        sf.debugOutput("src requested is", src)
+        src_split = os.path.split(src)
+        # отделяем путь от конечный пункта, то есть имя папки или файла который надо открыть
+        if current_user.is_authenticated:
+            if not sf.available_user_addresses(current_user.name, address_dir=src):
+                return redirect('/no_access/You have no access to this folder or file.')
+            # если нам отправили файл - сохранить.
+            if 'uploaded_file' in request.files:
+                uploaded_file = request.files['uploaded_file']
+                if uploaded_file.filename != '':
+                    uploaded_file.save(os.path.join(src, uploaded_file.filename))
+                    return redirect('/q/' + src.replace('/', gv.url_path_separation))
+    return redirect('/no_access/Error while uploading the file.')
+
+
 # ------------------------------ quick url -----------------------------
 
 @app.route('/q/')
@@ -233,7 +259,6 @@ def quick(src=None):
         if current_user.is_authenticated:
 
             if not sf.available_user_addresses(current_user.name, address_dir=src):
-
                 return redirect('/no_access/You have no access to this folder or file.')
 
             if src_split[-1] and os.path.isfile(src):  # если мы открываем файл дать его в чистом виде
@@ -247,9 +272,12 @@ def quick(src=None):
                     'list_invisible': list_invisible,  # ее содержимое в виде листа из кортежей.
                     # пример кортежа ('/q/C:;;Users;;', 'Users')
                     'isq': True,
-                    'fdrc': '/qs/' + sf.convert_path(src)
+                    'fdrc': '/qs/' + sf.convert_path(src),
+                    'src_encoded': sf.convert_path(src)
                 }
-                return render_template('folder.html', **args, ip=ip, dark=dark, title='Explorer', home_folder=gv.home_folder)  # рендерим папку
+
+                return render_template('folder.html', **args, ip=ip, dark=dark, title='Explorer',
+                                       home_folder=gv.home_folder)  # рендерим папку
         else:  # если нету входа в аккаунт но мы лезем в файлы то выбрасываем на no_access
             return redirect('/no_access/only users with certain access can reach this file')
     else:  # если просто /q без аргумента
@@ -269,7 +297,7 @@ def quickset(src=None):
                 sf.setqs(src)
                 return redirect('/q/' + sf.convert_path(src_split[0]))
             else:  # если зашло сюда значит мы открываем папку
-                list_visible, list_invisible = sf.generate_dir(src)
+                list_visible, list_invisible = sf.generate_dir(src, qs=True)
                 args = {
                     'path': src,  # путь папки
                     'list_visible': list_visible,  # ее содержимое в виде листа из кортежей.

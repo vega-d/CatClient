@@ -1,0 +1,8 @@
+{% block content %}
+
+Upload a file to this folder:
+<form action="/upload/{{ src_encoded }}" method="post" enctype="multipart/form-data" style="padding: 20px">
+        Choose the file: <input type="file" name="uploaded_file"/><BR><input type="submit" value="Upload"/>
+</form>
+
+{% endblock %}

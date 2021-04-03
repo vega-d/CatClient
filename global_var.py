@@ -1,7 +1,7 @@
 from service_func import getDefaultHome 
 # <==> ----- ----- ----- <==>
-host = '0.0.0.0'
-port = 80
+host = 'localhost'
+port = 5000
 
 quick_src = r''
 no_image = r'static/img/no_image.jpg'

@@ -139,15 +139,16 @@ def convert_path(path, link=False):
     return ll
 
 
-def generate_dir(path):
+def generate_dir(path, qs=False):
     import os
+    prefix = '/qs/' if qs else '/q/'
     try:
         list_dir = os.listdir(path)
     except PermissionError as e:
-        return [('/q/' + convert_path(os.path.split(path)[0]),
+        return [(prefix + convert_path(os.path.split(path)[0]),
                  'Sorry, you have no permissions. Click here to go back')],[]
     except FileNotFoundError as e:
-        return [('/q/' + convert_path(os.path.split(path)[0]),
+        return [(prefix + convert_path(os.path.split(path)[0]),
                  'Sorry, this file does not exist. Click here to go back')],[]
 
     ret, hidden_files = [], []
@@ -162,48 +163,26 @@ def generate_dir(path):
 
     if split_path[-1] and upperfolderAllowed:
         ret.append((
-            '/q/' + convert_path('/'.join(split_path[:-1])),
+            prefix + convert_path('/'.join(split_path[:-1])),
             '...'
         ))
 
     for i in list_dir:
         if i[0] == '.':
             hidden_files.append((
-                '/q/' + convert_path(os.path.join(path, i)),
+                prefix + convert_path(os.path.join(path, i)),
                 i
             ))
         else:
             ret.append((
-                '/q/' + convert_path(os.path.join(path, i)),
+                prefix + convert_path(os.path.join(path, i)),
                 i
             ))
     return ret, hidden_files
 
 
 def qsgenerate_dir(path):
-    import os
-    try:
-        list_dir = os.listdir(path)
-    except PermissionError as e:
-        return [('/qs/' + convert_path(os.path.split(path)[0]),
-                 'Sorry, you have no permissions. Click here to go back')]
-    ret = []
-
-    split_path = os.path.split(path)
-    if split_path[-1]:
-        ret.append((
-            '/qs/' + convert_path('/'.join(split_path[:-1])),
-            '...'
-        ))
-
-    for i in list_dir:
-        template = (
-            '/qs/' + convert_path(os.path.join(path, i)),
-            i
-        )
-        ret.append(template)
-    return ret
-
+    pass
 
 def setqs(src):
     import os
