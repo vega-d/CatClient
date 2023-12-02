@@ -3,17 +3,17 @@
 ## Get your freakin' files in place where you need them! ![img](https://i.imgur.com/83UDzyJ.png)
 
 This project has several features.  Here they are.
-- Remote access to files. For people who are too lazy for USB sticks.
+- Remote access to files.
 
-- Handy qrcodes. For that type of guys who can't memorise a single digit.
+- Handy qrcodes.
 
-- QT5 client for both host and client. For people who don't know about `localhost:80`
+- QT5 client for both host and client.
 
-- Admin account for ease of management. Jokes on you people with mania of power.
+- Admin account for ease of management.
 
-- API. Because you might feel like a hackerman.
+- restAPI.
 
-- Dark Theme. For those who are devs in their hearts.
+- Dark Theme.
 
 
 ## Quick Start
