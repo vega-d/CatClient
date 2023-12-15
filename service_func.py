@@ -25,23 +25,7 @@ def debugOutput(*args, **kwargs):
 
 
 def getIP():
-    """
-    nothing special just returns IPv4 of this pc (mac is not a pc!)
-    (c) Lunar
-    """
-    import socket
-    from sys import platform
-    if platform in ("linux", "linux2", "win32"):
-        if socket.gethostbyname(socket.gethostname()).split('.')[0] != '172':
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.connect(("8.8.8.8", 80))
-            return s.getsockname()[0]
-        else:
-            return '0.0.0.0'
-
-    elif platform == "darwin":
-        debugOutput(r"""you're running MacOS, i'm not gonna support that shit.""")  # sorry
-
+    return 'debian11-2023-12-2.hamlet-chimera.ts.net'
 
 def available_user_addresses(user_name, address_dir=None):
     from data import db_session
@@ -125,7 +109,7 @@ def getDefaultHome():
 def generateQR():
     import qrcode
 
-    img = qrcode.make('http://' + getIP() + ':' + str(gv.port))
+    img = qrcode.make('https://' + getIP())
     img.save("static/img/qr.png")
 
 
